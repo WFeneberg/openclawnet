@@ -1,0 +1,16 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.1.3">
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenClawNet.Gateway\OpenClawNet.Gateway.csproj" />
+    <ProjectReference Include="..\OpenClawNet.Web\OpenClawNet.Web.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>90a10297-42b5-4ec4-b9c6-121b94cb54f8</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

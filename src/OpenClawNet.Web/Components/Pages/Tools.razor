@@ -1,0 +1,44 @@
+@page "/tools"
+@rendermode InteractiveServer
+
+<PageTitle>OpenClaw - Tools</PageTitle>
+
+<h3>Available Tools</h3>
+
+<p class="text-muted">
+    Tools extend the agent's capabilities. The agent can use these tools to interact with files, 
+    run commands, fetch web content, and more.
+</p>
+
+<div class="row g-3">
+    @foreach (var tool in _tools)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@tool.Name</h5>
+                    <p class="card-text">@tool.Description</p>
+                    <div>
+                        <span class="badge bg-secondary">@tool.Category</span>
+                        @if (tool.RequiresApproval)
+                        {
+                            <span class="badge bg-warning">Requires Approval</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private readonly List<ToolInfo> _tools =
+    [
+        new("file_system", "Read, write, and list files in the workspace.", "filesystem", false),
+        new("shell", "Execute safe shell commands.", "shell", true),
+        new("web_fetch", "Fetch content from a URL.", "web", false),
+        new("schedule", "Schedule a reminder or recurring job.", "scheduler", false)
+    ];
+    
+    private sealed record ToolInfo(string Name, string Description, string Category, bool RequiresApproval);
+}

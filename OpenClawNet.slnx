@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OpenClawNet.Models.Abstractions/OpenClawNet.Models.Abstractions.csproj" />
+    <Project Path="src/OpenClawNet.Models.Ollama/OpenClawNet.Models.Ollama.csproj" />
+    <Project Path="src/OpenClawNet.Storage/OpenClawNet.Storage.csproj" />
+    <Project Path="src/OpenClawNet.ServiceDefaults/OpenClawNet.ServiceDefaults.csproj" />
+    <Project Path="src/OpenClawNet.Gateway/OpenClawNet.Gateway.csproj" />
+    <Project Path="src/OpenClawNet.Web/OpenClawNet.Web.csproj" />
+    <Project Path="src/OpenClawNet.AppHost/OpenClawNet.AppHost.csproj" />
+  </Folder>
+</Solution>

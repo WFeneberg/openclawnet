@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClawNet — Session 1</title>
+    <link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../shared/css/openclawnet.css">
+    <link rel="stylesheet" href="../node_modules/reveal.js/plugin/highlight/monokai.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+<section class="title-slide">
+<h1>OpenClawNet</h1>
+<h2>Session 1: Foundation + Local Chat</h2>
+<p>Building an AI Agent Platform with .NET</p>
+<div class="presenter-info">
+Bruno Capuano | Microsoft Reactor Series
+</div>
+<aside class="notes"><p>Welcome everyone! Today we&#39;re starting a 4-session journey building an AI agent platform with .NET. All the code is already built — our job is to understand every layer.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Series Roadmap</h2>
+<table>
+<thead>
+<tr>
+<th>Session</th>
+<th>Title</th>
+<th>Focus</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>→ 1</strong></td>
+<td><strong>Foundation + Local Chat</strong></td>
+<td><strong>Architecture, Ollama, SignalR streaming</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Tools &amp; Agent Workflows</td>
+<td>Tool framework, agent loop, function calling</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Skills &amp; Memory</td>
+<td>Skill system, conversation memory, embeddings</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Automation &amp; Cloud</td>
+<td>Scheduler, Azure OpenAI, production deployment</td>
+</tr>
+</tbody></table>
+
+<aside class="notes"><p>We have 4 sessions. Each builds on the previous. Today is the foundation — everything else depends on understanding these layers.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>What We&#39;re Building Today</h2>
+<p>A complete AI chatbot stack:</p>
+<ul>
+<li>🧱 <strong>18-project architecture</strong> with clean separation <!-- .element: class="fragment" --></li>
+<li>🦙 <strong>Local AI</strong> with Ollama — no cloud, no API keys <!-- .element: class="fragment" --></li>
+<li>⚡ <strong>Real-time streaming</strong> via SignalR WebSocket <!-- .element: class="fragment" --></li>
+<li>💾 <strong>Persistent conversations</strong> with EF Core + SQLite <!-- .element: class="fragment" --></li>
+<li>🚀 <strong>One-command startup</strong> with .NET Aspire <!-- .element: class="fragment" --></li>
+</ul>
+
+<aside class="notes"><p>Everything runs locally on your machine. No cloud accounts needed today.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Prerequisites Check</h2>
+<pre><code class="language-bash">dotnet --version          # 10.0.x ✓
+ollama list               # llama3.2 ✓
+code --version            # VS Code ✓
+</code></pre>
+<p>GitHub Copilot extension installed and active ✓</p>
+
+<aside class="notes"><p>Quick check — everyone has these? If not, you can follow along and set up later using the README.</p>
+</aside>
+</section>
+<section class="section-divider">
+<h1>Stage 1</h1>
+<h2>Architecture &amp; Core Abstractions</h2>
+<p>⏱️ 15 minutes</p>
+
+<aside class="notes"><p>Let&#39;s start with the big picture — how 18 projects fit together and why the model interface is the most important design decision.</p>
+</aside>
+</section>
+<section class="architecture-slide">
+<h2>Architecture Overview</h2>
+<p><img src="../shared/diagrams/architecture-overview.svg" alt="Architecture Overview"></p>
+
+<aside class="notes"><p>This is the full system. Today we&#39;re covering the bottom three layers: Models, Storage, and Gateway. The agent, tools, skills, and memory come in Sessions 2–3.</p>
+</aside>
+</section>
+<section class="architecture-slide">
+<h2>Solution Structure: 18 Projects</h2>
+<p><img src="../shared/diagrams/solution-structure.svg" alt="Solution Structure"></p>
+
+<aside class="notes"><p>Each project has a single responsibility. Models.Abstractions defines the interface. Models.Ollama implements it. Storage handles persistence. Gateway wires everything together.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2>The Key Contract: <code>IModelClient</code></h2>
+<pre><code class="language-csharp">public interface IModelClient
+{
+    string ProviderName { get; }
+
+    Task&lt;ChatResponse&gt; CompleteAsync(
+        ChatRequest request,
+        CancellationToken ct = default);
+
+    IAsyncEnumerable&lt;ChatResponseChunk&gt; StreamAsync(
+        ChatRequest request,
+        CancellationToken ct = default);
+
+    Task&lt;bool&gt; IsAvailableAsync(
+        CancellationToken ct = default);
+}
+</code></pre>
+<p><small>📁 <code>src/OpenClawNet.Models.Abstractions/IModelClient.cs</code> — 93 LOC</small></p>
+
+<aside class="notes"><p>This is the most important interface in the entire platform. Three methods: complete (batch), stream (real-time), and health check. Every provider implements this.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2>Data Transfer: Records</h2>
+<pre><code class="language-csharp">public sealed record ChatRequest
+{
+    public required string Model { get; init; }
+    public required IReadOnlyList&lt;ChatMessage&gt; Messages { get; init; }
+    public IReadOnlyList&lt;ToolDefinition&gt;? Tools { get; init; }
+    public double? Temperature { get; init; }
+    public int? MaxTokens { get; init; }
+}
+
+public sealed record ChatResponse
+{
+    public required string Content { get; init; }
+    public required ChatMessageRole Role { get; init; }
+    public IReadOnlyList&lt;ToolCall&gt;? ToolCalls { get; init; }
+    public required string Model { get; init; }
+    public UsageInfo? Usage { get; init; }
+}
+</code></pre>
+
+<aside class="notes"><p>Records are immutable by default. Once created, a ChatRequest can&#39;t change. This makes the code predictable and thread-safe. Notice the <code>required</code> keyword — the compiler enforces that Model and Messages are always set.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Dependency Injection Wiring</h2>
+<pre><code class="language-csharp">// Gateway/Program.cs
+builder.Services.AddModelClient&lt;OllamaModelClient&gt;();
+builder.Services.Configure&lt;ModelOptions&gt;(
+    builder.Configuration.GetSection(&quot;Model&quot;));
+</code></pre>
+<br>
+
+<p><strong>One line</strong> swaps the entire model provider:</p>
+<pre><code class="language-csharp">// Switch to Azure OpenAI — nothing else changes
+builder.Services.AddModelClient&lt;AzureOpenAIModelClient&gt;();
+</code></pre>
+
+<aside class="notes"><p>This is the payoff of the interface design. The Gateway doesn&#39;t know or care which model provider it&#39;s using. DI handles the wiring.</p>
+</aside>
+</section>
+<section class="demo-transition">
+<h2>🤖 Copilot Moment</h2>
+<h3>Add XML Documentation to <code>IModelClient</code></h3>
+<p>Open Copilot Chat → <em>&quot;Add XML documentation comments to all methods in this interface&quot;</em></p>
+
+<aside class="notes"><p>Let&#39;s see Copilot in action. It should understand the semantics of each method and generate meaningful docs — not just repeat the method names.</p>
+</aside>
+</section>
+<section class="section-divider">
+<h1>Stage 2</h1>
+<h2>Ollama Provider + Data Layer</h2>
+<p>⏱️ 15 minutes</p>
+
+<aside class="notes"><p>Now we go one level deeper. How does Ollama actually work? And how do we store conversations?</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>What is Ollama?</h2>
+<ul>
+<li><strong>Local LLM runtime</strong> — models run on your machine <!-- .element: class="fragment" --></li>
+<li><strong>REST API</strong> at <code>http://localhost:11434</code> <!-- .element: class="fragment" --></li>
+<li><strong>No cloud, no API keys, no cost</strong> <!-- .element: class="fragment" --></li>
+<li><strong>One command:</strong> <code>ollama pull llama3.2</code> <!-- .element: class="fragment" --></li>
+</ul>
+<br>
+
+<pre><code class="language-bash"># Verify it&#39;s running
+curl http://localhost:11434/api/tags
+</code></pre>
+<!-- .element: class="fragment" -->
+<aside class="notes"><p>Ollama is the default provider because it removes all barriers. Your data never leaves your machine.</p>
+</aside>
+</section>
+<section class="architecture-slide">
+<h2>Streaming Flow</h2>
+<p><img src="../shared/diagrams/streaming-flow.svg" alt="Streaming Flow"></p>
+
+<aside class="notes"><p>This diagram shows the complete token flow — from Ollama generating text, through NDJSON parsing, IAsyncEnumerable, SignalR, and finally into the browser. Each layer yields tokens as they arrive.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2><code>OllamaModelClient.StreamAsync</code></h2>
+<pre><code class="language-csharp">public async IAsyncEnumerable&lt;ChatResponseChunk&gt; StreamAsync(
+    ChatRequest request,
+    [EnumeratorCancellation] CancellationToken ct = default)
+{
+    // POST /api/chat with stream=true
+    var httpRequest = BuildRequest(request, stream: true);
+    var response = await _httpClient.SendAsync(
+        httpRequest, HttpCompletionOption.ResponseHeadersRead, ct);
+
+    // Read NDJSON stream line-by-line
+    await using var stream = await response.Content.ReadAsStreamAsync(ct);
+    using var reader = new StreamReader(stream);
+
+    while (await reader.ReadLineAsync(ct) is { } line)
+    {
+        var chunk = JsonSerializer.Deserialize&lt;OllamaResponse&gt;(line);
+        yield return new ChatResponseChunk { Content = chunk.Message.Content };
+    }
+}
+</code></pre>
+<p><small>📁 <code>src/OpenClawNet.Models.Ollama/OllamaModelClient.cs</code> — 181 LOC</small></p>
+
+<aside class="notes"><p>Key pattern: yield return creates a pipeline. Each token flows to the caller immediately. No buffering. The EnumeratorCancellation attribute enables cooperative cancellation.</p>
+</aside>
+</section>
+<section class="architecture-slide">
+<h2>Entity Relationship Diagram</h2>
+<p><img src="../shared/diagrams/entity-relationship.svg" alt="Entity Relationships"></p>
+
+<aside class="notes"><p>Seven entities. ChatSession is the root. Each session has messages, summaries, and tool call records. ScheduledJob and JobRun handle automation. ProviderSetting stores per-provider config.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2>Storage Entities</h2>
+<pre><code class="language-csharp">public sealed class ChatSession
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public string? Provider { get; set; }
+    public string? Model { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public List&lt;ChatMessageEntity&gt; Messages { get; set; }
+}
+
+public sealed class ChatMessageEntity
+{
+    public Guid Id { get; set; }
+    public Guid SessionId { get; set; }
+    public string Role { get; set; }       // user, assistant, system, tool
+    public string Content { get; set; }
+    public string? ToolCallsJson { get; set; }
+    public int OrderIndex { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+</code></pre>
+<p><small>📁 <code>src/OpenClawNet.Storage/</code> — 275 LOC</small></p>
+
+<aside class="notes"><p>Notice OrderIndex for message sequencing, nullable ToolCallsJson for structured tool data, and timestamps on everything. These design decisions pay off when we add memory and tool tracking later.</p>
+</aside>
+</section>
+<section class="demo-transition">
+<h2>🤖 Copilot Moment</h2>
+<h3>Add <code>GetRecentSessionsAsync</code> to ConversationStore</h3>
+<p>Start typing the method signature → Copilot completes the LINQ query</p>
+<pre><code class="language-csharp">public async Task&lt;List&lt;ChatSession&gt;&gt; GetRecentSessionsAsync(int count = 10)
+</code></pre>
+
+<aside class="notes"><p>Watch how Copilot infers OrderByDescending + Take from just the method name and parameter. Descriptive names are prompts for AI.</p>
+</aside>
+</section>
+<section class="section-divider">
+<h1>Stage 3</h1>
+<h2>Gateway + SignalR + Blazor</h2>
+<p>⏱️ 15 minutes</p>
+
+<aside class="notes"><p>Final stage — how all the pieces connect to deliver a real-time chat experience.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Gateway REST API</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST</code></td>
+<td><code>/api/chat/</code></td>
+<td>Send a chat message</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/sessions/</code></td>
+<td>List all sessions</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/sessions/</code></td>
+<td>Create new session</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/sessions/{id}</code></td>
+<td>Get session + messages</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/sessions/{id}</code></td>
+<td>Delete session</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/sessions/{id}/title</code></td>
+<td>Update title</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/sessions/{id}/messages</code></td>
+<td>Get message history</td>
+</tr>
+</tbody></table>
+<p><small>Minimal APIs — static extension classes, no controllers</small></p>
+
+<aside class="notes"><p>Seven endpoints cover the complete chat lifecycle. Minimal APIs are faster than controllers and the code reads top-to-bottom.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2>Gateway DI Setup</h2>
+<pre><code class="language-csharp">// Program.cs — Full composition root
+builder.AddServiceDefaults();                    // Aspire telemetry
+builder.Services.AddSignalR();                   // Real-time hub
+builder.Services.AddOpenClawStorage();           // EF Core + SQLite
+builder.Services.AddModelClient&lt;OllamaModelClient&gt;(); // LLM provider
+builder.Services.AddAgentRuntime();              // Orchestrator
+builder.Services.AddHostedService&lt;JobSchedulerService&gt;();
+</code></pre>
+<br>
+
+<p><strong>Every service registered in one place, one file.</strong></p>
+
+<aside class="notes"><p>This is the composition root. Every dependency is explicit and visible. No hidden magic, no convention-based discovery.</p>
+</aside>
+</section>
+<section class="two-column">
+<h2>SignalR: Push vs Poll</h2>
+<div class="col">
+
+<h3>❌ Polling</h3>
+<pre><code>Client: Any new tokens?  → No
+Client: Any new tokens?  → No
+Client: Any new tokens?  → Yes! &quot;Hello&quot;
+Client: Any new tokens?  → Yes! &quot; world&quot;
+</code></pre>
+<p>Wasteful. Latency = poll interval.</p>
+</div>
+
+<div class="col">
+
+<h3>✅ SignalR Push</h3>
+<pre><code>Server: &quot;Hello&quot;  → Client
+Server: &quot; world&quot; → Client
+Server: &quot;!&quot;      → Client
+Server: [done]   → Client
+</code></pre>
+<p>Instant. Zero wasted requests.</p>
+</div>
+<aside class="notes"><p>SignalR uses WebSocket when available. Each token pushes to the client the instant it&#39;s generated. This is what makes the &quot;typing&quot; effect work.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2><code>ChatHub.StreamChat</code></h2>
+<pre><code class="language-csharp">public sealed class ChatHub : Hub
+{
+    public async IAsyncEnumerable&lt;ChatHubMessage&gt; StreamChat(
+        Guid sessionId, string message, string? model = null)
+    {
+        var request = new AgentRequest
+        {
+            SessionId = sessionId,
+            UserMessage = message,
+            Model = model
+        };
+
+        await foreach (var evt in _orchestrator.StreamAsync(request))
+        {
+            yield return evt.Type switch
+            {
+                AgentStreamEventType.ContentDelta =&gt;
+                    new ChatHubMessage(&quot;content&quot;, evt.Content ?? &quot;&quot;),
+                AgentStreamEventType.Complete =&gt;
+                    new ChatHubMessage(&quot;complete&quot;, evt.Content ?? &quot;&quot;),
+                AgentStreamEventType.Error =&gt;
+                    new ChatHubMessage(&quot;error&quot;, evt.Content ?? &quot;&quot;),
+                _ =&gt; new ChatHubMessage(&quot;unknown&quot;, &quot;&quot;)
+            };
+        }
+    }
+}
+</code></pre>
+
+<aside class="notes"><p>The hub is thin — it delegates to the orchestrator and maps events to client messages. Pattern matching makes the mapping explicit. IAsyncEnumerable enables server-to-client streaming.</p>
+</aside>
+</section>
+<section class="code-slide">
+<h2>Aspire Orchestration</h2>
+<pre><code class="language-csharp">// AppHost.cs — 18 lines, entire topology
+var gateway = builder.AddProject&lt;Projects.OpenClawNet_Gateway&gt;(&quot;gateway&quot;)
+    .WithExternalHttpEndpoints()
+    .WithHttpHealthCheck(&quot;/health&quot;)
+    .WithEnvironment(&quot;ConnectionStrings__DefaultConnection&quot;, connStr)
+    .WithEnvironment(&quot;Model__Endpoint&quot;, ollamaEndpoint);
+
+builder.AddProject&lt;Projects.OpenClawNet_Web&gt;(&quot;web&quot;)
+    .WithExternalHttpEndpoints()
+    .WithReference(gateway)     // ← Service discovery
+    .WaitFor(gateway)           // ← Startup ordering
+    .WithEnvironment(&quot;OpenClawNet__OllamaBaseUrl&quot;, ollamaEndpoint);
+</code></pre>
+<p><small>This replaces Docker Compose + startup scripts</small></p>
+
+<aside class="notes"><p>WithReference gives Web a service reference to Gateway. WaitFor ensures Gateway is healthy before Web starts. One command runs everything.</p>
+</aside>
+</section>
+<section class="demo-transition">
+<h2>🎬 Live Demo</h2>
+<h3>Run the Full Stack</h3>
+<pre><code class="language-bash">dotnet run --project src/OpenClawNet.AppHost
+</code></pre>
+<ol>
+<li>Open Aspire Dashboard → <code>https://localhost:15100</code></li>
+<li>Open Blazor UI → <code>http://localhost:5001</code></li>
+<li>Create a session → Send a message</li>
+<li>Watch tokens stream in real-time! 🚀</li>
+</ol>
+
+<aside class="notes"><p>This is the payoff. Everything we&#39;ve explained — the interface, the streaming, the storage, the SignalR hub — all comes together in one running application.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>What We Built ✓</h2>
+<ul>
+<li>✅ <strong>18-project architecture</strong> with interface-driven design <!-- .element: class="fragment" --></li>
+<li>✅ <strong><code>IModelClient</code></strong> — pluggable model providers <!-- .element: class="fragment" --></li>
+<li>✅ <strong>Ollama streaming</strong> — NDJSON → <code>IAsyncEnumerable</code> → real-time tokens <!-- .element: class="fragment" --></li>
+<li>✅ <strong>EF Core storage</strong> — 7 entities, repository pattern <!-- .element: class="fragment" --></li>
+<li>✅ <strong>SignalR ChatHub</strong> — push tokens to the browser instantly <!-- .element: class="fragment" --></li>
+<li>✅ <strong>Aspire orchestration</strong> — one command, full stack <!-- .element: class="fragment" --></li>
+</ul>
+
+<aside class="notes"><p>We covered a lot of ground. Every layer has a clear purpose, and they all connect through well-defined interfaces.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Next: Session 2</h2>
+<h3>Tools &amp; Agent Workflows</h3>
+<blockquote>
+<p>&quot;We have a chatbot that answers questions. Next session: we give it <strong>superpowers</strong>.&quot;</p>
+</blockquote>
+<ul>
+<li>🔧 Tool framework: <code>ITool</code>, <code>IToolRegistry</code>, <code>IToolExecutor</code> <!-- .element: class="fragment" --></li>
+<li>📂 Built-in tools: FileSystem, Shell, Web, Scheduler <!-- .element: class="fragment" --></li>
+<li>🔄 The agent loop: think → act → observe → repeat <!-- .element: class="fragment" --></li>
+</ul>
+
+<aside class="notes"><p>The chatbot is smart but passive. In Session 2, it learns to DO things — read files, run commands, fetch web pages. That&#39;s the agent pattern.</p>
+</aside>
+</section>
+<section class="content-slide">
+<h2>Resources</h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>📦 GitHub Repo</td>
+<td><a href="https://github.com/elbruno/openclawnet">github.com/elbruno/openclawnet</a></td>
+</tr>
+<tr>
+<td>📖 .NET Aspire</td>
+<td><a href="https://learn.microsoft.com/dotnet/aspire">learn.microsoft.com/dotnet/aspire</a></td>
+</tr>
+<tr>
+<td>🦙 Ollama</td>
+<td><a href="https://ollama.com">ollama.com</a></td>
+</tr>
+<tr>
+<td>💬 SignalR</td>
+<td><a href="https://learn.microsoft.com/aspnet/core/signalr">learn.microsoft.com/aspnet/signalr</a></td>
+</tr>
+<tr>
+<td>🤖 GitHub Copilot</td>
+<td><a href="https://github.com/features/copilot">github.com/features/copilot</a></td>
+</tr>
+</tbody></table>
+
+<aside class="notes"><p>All links are in the session README. The repo has everything — code, docs, diagrams, and setup instructions.</p>
+</aside>
+</section>
+<section class="closing-slide">
+<h1>Thank You!</h1>
+<h2>Questions?</h2>
+<div class="social-links">
+
+<p>🐙 <a href="https://github.com/elbruno">github.com/elbruno</a>
+🐦 <a href="https://twitter.com/elbruno">@elaboruno</a></p>
+</div>
+
+<div class="series-info">
+
+<p><strong>Next session:</strong> Tools &amp; Agent Workflows</p>
+</div>
+<aside class="notes"><p>Thank you! We&#39;ll take questions now. Don&#39;t forget to star the repo and pull the code to follow along in Session 2.</p>
+</aside>
+</section>
+        </div>
+    </div>
+    <script type="module">
+        import Reveal from '../node_modules/reveal.js/dist/reveal.esm.js';
+        import Highlight from '../node_modules/reveal.js/plugin/highlight/highlight.esm.js';
+        import Notes from '../node_modules/reveal.js/plugin/notes/notes.esm.js';
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            showSlideNumber: 'speaker',
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            center: true,
+            width: 1920,
+            height: 1080,
+            margin: 0.04,
+            plugins: [Highlight, Notes]
+        });
+    </script>
+</body>
+</html>

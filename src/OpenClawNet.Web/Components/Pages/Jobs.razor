@@ -1,0 +1,152 @@
+@page "/jobs"
+@rendermode InteractiveServer
+
+<PageTitle>OpenClaw - Jobs</PageTitle>
+
+<h3>Scheduled Jobs</h3>
+
+<p class="text-muted">
+    Manage scheduled prompts and recurring automation tasks. Jobs are created by the agent 
+    using the <code>schedule</code> tool or through the API.
+</p>
+
+<div class="mb-3">
+    <button class="btn btn-primary btn-sm" @onclick="() => _showCreateForm = !_showCreateForm">
+        + New Job
+    </button>
+</div>
+
+@if (_showCreateForm)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Create Job</h5>
+            <div class="mb-2">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" @bind="_newJobName" placeholder="Daily standup summary" />
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Prompt</label>
+                <textarea class="form-control" rows="3" @bind="_newJobPrompt" 
+                          placeholder="Summarize the team's progress from yesterday..."></textarea>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label class="form-label">Run At (optional)</label>
+                    <input type="datetime-local" class="form-control" @bind="_newJobRunAt" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Cron (for recurring)</label>
+                    <input type="text" class="form-control" @bind="_newJobCron" placeholder="0 9 * * 1-5" />
+                </div>
+            </div>
+            <button class="btn btn-success btn-sm" @onclick="CreateJob">Create</button>
+            <button class="btn btn-secondary btn-sm" @onclick="() => _showCreateForm = false">Cancel</button>
+        </div>
+    </div>
+}
+
+@if (_jobs.Count == 0)
+{
+    <div class="alert alert-info">
+        No scheduled jobs yet. Create one above or ask the agent to schedule a reminder.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Next Run</th>
+                    <th>Last Run</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in _jobs)
+                {
+                    <tr>
+                        <td>
+                            <strong>@job.Name</strong>
+                            <div class="small text-muted">@job.Prompt[..Math.Min(60, job.Prompt.Length)]...</div>
+                        </td>
+                        <td>
+                            <span class="badge @GetStatusBadgeClass(job.Status)">@job.Status</span>
+                        </td>
+                        <td>
+                            @if (job.IsRecurring)
+                            {
+                                <span class="badge bg-info">🔄 Recurring</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">One-time</span>
+                            }
+                        </td>
+                        <td class="small">@(job.NextRunAt?.ToString("g") ?? "—")</td>
+                        <td class="small">@(job.LastRunAt?.ToString("g") ?? "Never")</td>
+                        <td>
+                            <button class="btn btn-outline-danger btn-sm" @onclick="() => CancelJob(job)">Cancel</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private readonly List<JobInfo> _jobs = [];
+    private bool _showCreateForm;
+    private string _newJobName = string.Empty;
+    private string _newJobPrompt = string.Empty;
+    private DateTime? _newJobRunAt;
+    private string _newJobCron = string.Empty;
+    
+    private void CreateJob()
+    {
+        if (string.IsNullOrWhiteSpace(_newJobName) || string.IsNullOrWhiteSpace(_newJobPrompt)) return;
+        
+        _jobs.Add(new JobInfo(
+            Guid.NewGuid(),
+            _newJobName,
+            _newJobPrompt,
+            "active",
+            !string.IsNullOrEmpty(_newJobCron),
+            _newJobCron,
+            _newJobRunAt ?? DateTime.Now.AddHours(1),
+            null));
+        
+        _newJobName = string.Empty;
+        _newJobPrompt = string.Empty;
+        _newJobRunAt = null;
+        _newJobCron = string.Empty;
+        _showCreateForm = false;
+    }
+    
+    private void CancelJob(JobInfo job)
+    {
+        var index = _jobs.IndexOf(job);
+        if (index >= 0)
+        {
+            _jobs[index] = job with { Status = "cancelled" };
+        }
+    }
+    
+    private static string GetStatusBadgeClass(string status) => status switch
+    {
+        "active" => "bg-success",
+        "completed" => "bg-primary",
+        "cancelled" => "bg-secondary",
+        "failed" => "bg-danger",
+        _ => "bg-warning"
+    };
+    
+    private sealed record JobInfo(
+        Guid Id, string Name, string Prompt, string Status, 
+        bool IsRecurring, string? CronExpression, DateTime? NextRunAt, DateTime? LastRunAt);
+}

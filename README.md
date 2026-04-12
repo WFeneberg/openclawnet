@@ -2,22 +2,13 @@
 
 **Build an AI Agent Platform in .NET 10 with GitHub Copilot**
 
-Welcome to OpenClawNet! This repository contains session materials and working code from the **Microsoft Reactor live series** on building production-ready AI agents using .NET 10, Blazor, and GitHub Copilot. If you attended the live sessions, you'll find the scaffolded code and demo materials here.
+Welcome to OpenClawNet! This repository contains session materials and working code from the **Microsoft Reactor live series** on building production-ready AI agents using .NET 10, Blazor, and GitHub Copilot.
 
----
-
-## What's in This Repo?
-
-- **4 progressive session branches:** Code builds incrementally across sessions—clone and follow along at your own pace
-- **Session guides & demos:** Architecture diagrams, demo scripts, and learning goals for each session
-- **Working examples:** Complete, runnable code showcasing agent orchestration, tool calling, skills, and cloud integration
-- **Documentation:** Architecture, setup instructions, and code walkthroughs
+> **📌 This repo grows with each session.** Code is added incrementally — after Session 1, you'll have a working chatbot. By Session 4, a full AI agent platform.
 
 ---
 
 ## 📺 Reactor Series — Register Now!
-
-This is a **Microsoft Reactor live series**. Register and attend live, or watch the recordings after each session.
 
 | Language | Series Page |
 |----------|------------|
@@ -26,88 +17,73 @@ This is a **Microsoft Reactor live series**. Register and attend live, or watch 
 
 ---
 
-## 📅 The 4-Session Structure
+## 📅 The 4-Session Journey (50 min each)
 
-### **Session 1: From Zero to ChatBot in 60 Minutes**
-**Scaffolding + Gateway + Local Chat**
+### Session 1: Foundation + Local Chat
+**Architecture, Ollama Provider, SignalR Streaming, Blazor UI**
 
-Start with an empty .NET solution and build a working chat UI in one hour. You'll scaffold Aspire orchestration, create a minimal Gateway API, and hook up a Blazor web UI with SignalR real-time messaging. **Output:** A ChatBot you can talk to locally.
+Walk through a pre-built .NET 10 solution: model abstractions, Ollama integration with SSE streaming, EF Core storage, Gateway API, and a real-time Blazor chat UI — all orchestrated with Aspire.
 
-- **Topics:** Project setup, Aspire, Minimal APIs, Blazor, SignalR
-- **Hands-on:** Build and run the chat interface
-- **Outcome:** Real-time client-server messaging layer ready for AI
-- 🇺🇸 [Register (English)](https://developer.microsoft.com/en-us/reactor/events/26919/) · 🇪🇸 [Registrarse (Español)](https://developer.microsoft.com/en-us/reactor/events/26923/)
-
-> 📦 **Materials:** 📹 Recording · 📊 Slides · 💻 Source Code · 🎯 Demo Prompts — *Coming soon after the session*
+- 📊 [Slides](sessions/session-1/slides.html) · 📝 [Speaker Script](sessions/session-1/speaker-script.md) · 🤖 [Copilot Prompts](sessions/session-1/copilot-prompts.md)
+- 🇺🇸 [Register](https://developer.microsoft.com/en-us/reactor/events/26919/) · 🇪🇸 [Registrarse](https://developer.microsoft.com/en-us/reactor/events/26923/)
 
 ---
 
-### **Session 2: Teach Your AI to Act, Not Just Talk**
-**Tools + Agent Workflows**
+### Session 2: Tools + Agent Workflows
+**Tool Framework, Security Model, Agent Orchestrator Loop**
 
-Connect an AI model and teach it to use tools. Build the Agent Orchestrator, integrate model providers (Ollama/Azure OpenAI), and implement a tool framework so your AI can execute file, web, and shell operations. **Output:** An AI that reasons and acts, not just responds.
+Upgrade the chatbot to an agent: add a tool framework with approval policies, built-in tools (FileSystem, Shell, Web, Scheduler) with security gates, and the core agent reasoning loop.
 
-- **Topics:** Agent orchestration, model integration, tool registry, tool calling loops
-- **Hands-on:** Prompt the AI to execute real tasks
-- **Outcome:** Agentic behavior with constrained tool access
-- 🇺🇸 [Register (English)](https://developer.microsoft.com/en-us/reactor/events/26920/) · 🇪🇸 [Registrarse (Español)](https://developer.microsoft.com/en-us/reactor/events/26924/)
-
-> 📦 **Materials:** 📹 Recording · 📊 Slides · 💻 Source Code · 🎯 Demo Prompts — *Coming soon after the session*
+- 📦 *Materials available after Session 1*
+- 🇺🇸 [Register](https://developer.microsoft.com/en-us/reactor/events/26920/) · 🇪🇸 [Registrarse](https://developer.microsoft.com/en-us/reactor/events/26924/)
 
 ---
 
-### **Session 3: Customize Behavior & Remember Conversations**
-**Skills + Memory**
+### Session 3: Skills + Memory
+**Markdown Skills, Context Management, Semantic Search**
 
-Build skills (reusable AI behaviors) and add persistent memory. Store conversations in SQLite, implement embedding-based retrieval for context, and organize AI capabilities as composable markdown + YAML skills. **Output:** An agent that learns and remembers.
+Give the agent personality with Markdown+YAML skills and long-term memory through conversation summarization and local embeddings for semantic search.
 
-- **Topics:** Skills framework, conversation memory, embeddings, EF Core + SQLite
-- **Hands-on:** Create custom skills and persistent message history
-- **Outcome:** Stateful, context-aware agent behavior
-- 🇺🇸 [Register (English)](https://developer.microsoft.com/en-us/reactor/events/26921/) · 🇪🇸 [Registrarse (Español)](https://developer.microsoft.com/en-us/reactor/events/26925/)
-
-> 📦 **Materials:** 📹 Recording · 📊 Slides · 💻 Source Code · 🎯 Demo Prompts — *Coming soon after the session*
+- 📦 *Materials available after Session 2*
+- 🇺🇸 [Register](https://developer.microsoft.com/en-us/reactor/events/26921/) · 🇪🇸 [Registrarse](https://developer.microsoft.com/en-us/reactor/events/26925/)
 
 ---
 
-### **Session 4: From Local Dev to Production Ready**
-**Automation + Azure + Foundry**
+### Session 4: Automation + Cloud 🎉
+**Cloud Providers, Job Scheduling, Testing, Production Readiness**
 
-Deploy to Azure and scale with Microsoft Foundry. Set up GitHub Actions pipelines, containerize with Docker, provision cloud resources, and use Foundry for advanced agent management and observability. **Output:** Production-hardened AI platform.
+Connect Azure OpenAI and Foundry providers, add cron-based job scheduling, run the full test suite, and see the complete platform in action.
 
-- **Topics:** Docker, Azure deployment, CI/CD, Microsoft Foundry, observability
-- **Hands-on:** Deploy locally, push to Azure, use Foundry dashboard
-- **Outcome:** Cloud-ready, monitored agent platform
-- 🇺🇸 [Register (English)](https://developer.microsoft.com/en-us/reactor/events/26922/) · 🇪🇸 [Registrarse (Español)](https://developer.microsoft.com/en-us/reactor/events/26926/)
+- 📦 *Materials available after Session 3*
+- 🇺🇸 [Register](https://developer.microsoft.com/en-us/reactor/events/26922/) · 🇪🇸 [Registrarse](https://developer.microsoft.com/en-us/reactor/events/26926/)
 
-> 📦 **Materials:** 📹 Recording · 📊 Slides · 💻 Source Code · 🎯 Demo Prompts — *Coming soon after the session*
+---
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/elbruno/openclawnet.git
+cd openclawnet
+
+# Build and run (requires .NET 10 SDK + Ollama)
+dotnet build
+cd src/OpenClawNet.AppHost
+dotnet run
+```
+
+The Aspire dashboard opens at `https://localhost:15888` — from there you can access the Gateway and Blazor Web UI.
 
 ---
 
 ## 📋 Prerequisites
 
-### For All Sessions (Local Development)
-
 - **.NET 10 SDK** — [Download](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - **VS Code + GitHub Copilot** — [Setup](https://github.com/features/copilot)
-- **Foundry Local** (run AI models locally) — [GitHub](https://github.com/microsoft/Foundry-Local) · [Website](https://www.foundrylocal.ai/)
+- **Ollama** — [Download](https://ollama.ai/) (run `ollama pull phi4-mini` to test)
 - **Docker** — [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- **Git** — [Download](https://git-scm.com/)
 
-### For Session 4 (Cloud Deployment)
-
-- **Azure subscription** — [Create a free account](https://azure.microsoft.com/free/) (free tier works!)
-- **Azure CLI (`az`)** — [Install](https://learn.microsoft.com/cli/azure/install-azure-cli)
-
----
-
-## 🎒 Before Your First Session
-
-1. ✅ **Install prerequisites** above (especially .NET 10, VS Code + Copilot, and Foundry Local)
-2. ✅ **Register** for the sessions — [🇺🇸 English](https://developer.microsoft.com/en-us/reactor/series/s-1652/) or [🇪🇸 Español](https://developer.microsoft.com/en-us/reactor/series/S-1653/)
-3. ✅ **Clone this repo** — `git clone https://github.com/elbruno/openclawnet.git`
-4. ✅ **Test Foundry Local** — Run `foundry model run phi-4-mini` to verify local AI models work on your machine
-5. ✅ **Join the community** — [Azure AI Discord](https://aka.ms/ai-discord/dotnet) for live Q&A during sessions
+For Session 4 (optional): **Azure subscription** — [Free account](https://azure.microsoft.com/free/)
 
 ---
 
@@ -126,87 +102,38 @@ Blazor Web UI ──SignalR──▶ Gateway API ──▶ Agent Orchestrator
                                          SQLite Storage
 ```
 
-**Key Components:**
-
-- **Blazor Web UI** — Real-time chat interface (SignalR)
-- **Gateway API** — Entry point and request routing (Minimal APIs)
-- **Agent Orchestrator** — Core reasoning loop, tool calling, skill composition
-- **Model Provider** — Abstraction over Ollama, Azure OpenAI, and Microsoft Foundry
-- **Tool Framework** — Registry of available tools (file, shell, web, custom)
-- **Skills System** — Markdown + YAML-based reusable behaviors
-- **SQLite + EF Core** — Persistent storage for conversations and state
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Blazor WebAssembly, SignalR |
-| **API** | ASP.NET Core Minimal APIs |
-| **Orchestration** | .NET Aspire |
-| **Agent Runtime** | Custom .NET orchestrator |
-| **Models** | Ollama (local), Azure OpenAI, Microsoft Foundry |
-| **Storage** | SQLite, EF Core |
-| **Tooling** | Docker, GitHub Actions, Azure |
-| **IDE** | VS Code, GitHub Copilot |
+> 💡 **Session 1 starts with just the chatbot path** (UI → Gateway → Model → Storage). Each session adds a new layer until you have the full agent platform.
 
 ---
 
 ## 📖 How to Follow Along
 
-Each session adds code incrementally. Code is organized by branches or folders:
+Each session uses an **Explain → Explore → Extend** approach:
 
-1. **After Session 1:** Chat UI and Gateway are working
-2. **After Session 2:** Agent Orchestrator and tool calling active
-3. **After Session 3:** Skills and persistent memory enabled
-4. **After Session 4:** Cloud deployment and observability running
+1. **Explain** — Walk through the pre-built code and architecture
+2. **Explore** — Run live demos, test endpoints, see behavior
+3. **Extend** — 2-3 small Copilot completions to add features
 
-Clone the repo and start at **Session 1**. As sessions roll out, new code is added. You can:
-- **Follow live** during the Reactor session
-- **Code along** at your own pace using the session guides
-- **Reference** completed code to compare against your work
-
----
-
-## 📚 Documentation
-
-Full documentation is in the [`docs/`](./docs/) folder:
-
-- **Architecture** — Detailed component design and data flows
-- **Session Guides** — Step-by-step learning paths with Copilot prompts
-- **Setup** — Installation and environment configuration
-- **Prompts** — Demo scripts and Copilot conversation starters
+The code grows incrementally:
+| After Session | What's in the repo |
+|---------------|-------------------|
+| **1** | Chatbot: Models, Ollama, Storage, Gateway, Blazor, Aspire |
+| **2** | + Agent: Tools framework, security gates, agent loop |
+| **3** | + Personality: Skills system, memory, summarization |
+| **4** | + Production: Cloud providers, scheduling, tests |
 
 ---
 
-## 💬 Questions & Community
+## 💬 Community
 
-[![Azure AI Community Discord](https://img.shields.io/discord/1113626258182504448?label=Azure%20AI%20Community%20Discord)](https://aka.ms/ai-discord/dotnet)
-[![Microsoft Foundry Discussions](https://img.shields.io/badge/Discussions-Microsoft%20Foundry-blueviolet?logo=github&style=flat-square)](https://aka.ms/ai-discussions/dotnet)
-
-- **💬 Ask questions during sessions:** Join the [Azure AI Community Discord](https://aka.ms/ai-discord/dotnet) — find us in the .NET channel
-- **🗣️ Foundry discussions:** [Microsoft Foundry GitHub Discussions](https://aka.ms/ai-discussions/dotnet)
-- **📺 Live Sessions:** [🇺🇸 English Series](https://developer.microsoft.com/en-us/reactor/series/s-1652/) · [🇪🇸 Serie en Español](https://developer.microsoft.com/en-us/reactor/series/S-1653/)
-- **🐛 Found an issue?** [Open an issue](https://github.com/elbruno/openclawnet/issues) in this repository
-- **📝 Feedback:** We'd love to hear how this series helped you
-
----
-
-## 📚 Additional Resources
-
-- **[Generative AI for Beginners .NET](https://aka.ms/genainet)** — Hands-on .NET AI course from Microsoft (great companion to this series)
-- **[Foundry Local](https://www.foundrylocal.ai/)** — Run AI models locally on your hardware
-- **[.NET Aspire](https://learn.microsoft.com/dotnet/aspire/)** — Cloud-native orchestration for .NET
+- **Discord:** [Azure AI Community](https://aka.ms/ai-discord/dotnet) (.NET channel)
+- **Issues:** [Open an issue](https://github.com/elbruno/openclawnet/issues)
+- **Resources:** [Generative AI for Beginners .NET](https://aka.ms/genainet) · [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
-
----
+MIT License — see [LICENSE](./LICENSE) for details.
 
 **Built with ❤️ for the .NET and AI developer community.** 🐾
-
-Questions? Start with the [docs](./docs/) or open an issue!

@@ -1,0 +1,220 @@
+@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IConfiguration Configuration
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+
+<PageTitle>OpenClaw - Chat</PageTitle>
+
+<div class="chat-container d-flex flex-column" style="height: calc(100vh - 100px);">
+    @* Session selector *@
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button class="btn btn-outline-primary btn-sm" @onclick="NewSession">
+            + New Chat
+        </button>
+        @if (_currentSession is not null)
+        {
+            <span class="text-muted small">Session: @_currentSession.Title</span>
+        }
+    </div>
+
+    @* Messages area *@
+    <div class="flex-grow-1 overflow-auto mb-3 p-3 border rounded bg-light" @ref="_messagesContainer" id="messages-container">
+        @if (_messages.Count == 0)
+        {
+            <div class="text-center text-muted mt-5">
+                <h4>🐾 Welcome to OpenClaw</h4>
+                <p>Start a conversation with your AI assistant.</p>
+            </div>
+        }
+        
+        @foreach (var msg in _messages)
+        {
+            <div class="mb-3 @(msg.Role == "user" ? "text-end" : "")">
+                <div class="d-inline-block p-2 rounded @(msg.Role == "user" ? "bg-primary text-white" : "bg-white border")"
+                     style="max-width: 80%; word-wrap: break-word; white-space: pre-wrap;">
+                    @msg.Content
+                </div>
+                <div class="small text-muted mt-1">
+                    @msg.Role · @msg.Timestamp.ToString("HH:mm")
+                </div>
+            </div>
+        }
+        
+        @if (_isStreaming)
+        {
+            <div class="mb-3">
+                <div class="d-inline-block p-2 rounded bg-white border" style="max-width: 80%;">
+                    @if (!string.IsNullOrEmpty(_currentToolName))
+                    {
+                        <div class="mb-1">
+                            <span class="badge bg-info">🔧 @_currentToolName</span>
+                            <span class="text-muted small">executing...</span>
+                        </div>
+                    }
+                    @if (string.IsNullOrEmpty(_streamingContent) && string.IsNullOrEmpty(_currentToolName))
+                    {
+                        <span class="text-muted">Thinking...</span>
+                    }
+                    else if (!string.IsNullOrEmpty(_streamingContent))
+                    {
+                        <span style="white-space: pre-wrap;">@_streamingContent</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Input area *@
+    <div class="d-flex gap-2">
+        <textarea class="form-control" rows="2" placeholder="Type your message..."
+                  @bind="_userInput" @bind:event="oninput"
+                  @onkeydown="HandleKeyDown"
+                  disabled="@_isStreaming"></textarea>
+        <button class="btn btn-primary px-4" @onclick="SendMessage" disabled="@(_isStreaming || string.IsNullOrWhiteSpace(_userInput))">
+            Send
+        </button>
+    </div>
+</div>
+
+@code {
+    private HubConnection? _hubConnection;
+    private readonly List<ChatDisplayMessage> _messages = [];
+    private string _userInput = string.Empty;
+    private string _streamingContent = string.Empty;
+    private string _currentToolName = string.Empty;
+    private bool _isStreaming;
+    private SessionInfo? _currentSession;
+    private ElementReference _messagesContainer;
+    private string _gatewayUrl = string.Empty;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _gatewayUrl = ResolveGatewayUrl();
+        await NewSession();
+    }
+    
+    private async Task NewSession()
+    {
+        _messages.Clear();
+        _currentSession = new SessionInfo(Guid.NewGuid(), "New Chat");
+        
+        // Set up SignalR connection
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+        
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{_gatewayUrl}/hubs/chat")
+            .WithAutomaticReconnect()
+            .Build();
+        
+        try
+        {
+            await _hubConnection.StartAsync();
+        }
+        catch (Exception)
+        {
+            // Gateway might not be running — degrade gracefully
+        }
+        
+        StateHasChanged();
+    }
+    
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(_userInput) || _currentSession is null) return;
+        
+        var message = _userInput.Trim();
+        _userInput = string.Empty;
+        
+        _messages.Add(new ChatDisplayMessage("user", message, DateTime.Now));
+        _isStreaming = true;
+        _streamingContent = string.Empty;
+        StateHasChanged();
+        
+        try
+        {
+            if (_hubConnection?.State == HubConnectionState.Connected)
+            {
+                // Use SignalR streaming
+                var stream = _hubConnection.StreamAsync<ChatHubMessage>(
+                    "StreamChat", _currentSession.Id, message);
+                
+                await foreach (var chunk in stream)
+                {
+                    if (chunk.Type == "content")
+                    {
+                        _streamingContent += chunk.Content;
+                        StateHasChanged();
+                    }
+                    else if (chunk.Type == "tool_start")
+                    {
+                        _currentToolName = chunk.Content;
+                        StateHasChanged();
+                    }
+                    else if (chunk.Type == "tool_complete")
+                    {
+                        _currentToolName = string.Empty;
+                        StateHasChanged();
+                    }
+                    else if (chunk.Type == "complete")
+                    {
+                        break;
+                    }
+                }
+                
+                _messages.Add(new ChatDisplayMessage("assistant", _streamingContent, DateTime.Now));
+            }
+            else
+            {
+                // Fallback: show connection error
+                _messages.Add(new ChatDisplayMessage("assistant",
+                    "⚠️ Not connected to the Gateway. Please ensure the Gateway service is running.", DateTime.Now));
+            }
+        }
+        catch (Exception ex)
+        {
+            _messages.Add(new ChatDisplayMessage("assistant",
+                $"⚠️ Error: {ex.Message}", DateTime.Now));
+        }
+        finally
+        {
+            _isStreaming = false;
+            _streamingContent = string.Empty;
+            _currentToolName = string.Empty;
+            StateHasChanged();
+        }
+    }
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendMessage();
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private string ResolveGatewayUrl()
+    {
+        var configuredUrl = Configuration["Services:gateway:https:0"]
+            ?? Configuration["Services:gateway:http:0"]
+            ?? Configuration["OpenClawNet:GatewayBaseUrl"]
+            ?? "https://localhost:7100";
+
+        return configuredUrl.TrimEnd('/');
+    }
+    
+    private sealed record ChatDisplayMessage(string Role, string Content, DateTime Timestamp);
+    private sealed record SessionInfo(Guid Id, string Title);
+    private sealed record ChatHubMessage(string Type, string Content);
+}

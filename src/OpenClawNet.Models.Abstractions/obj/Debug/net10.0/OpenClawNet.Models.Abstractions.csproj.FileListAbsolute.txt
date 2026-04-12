@@ -1,0 +1,13 @@
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\bin\Debug\net10.0\OpenClawNet.Models.Abstractions.deps.json
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\bin\Debug\net10.0\OpenClawNet.Models.Abstractions.dll
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\bin\Debug\net10.0\OpenClawNet.Models.Abstractions.pdb
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.csproj.AssemblyReference.cache
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.GeneratedMSBuildEditorConfig.editorconfig
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.AssemblyInfoInputs.cache
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.AssemblyInfo.cs
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.csproj.CoreCompileInputs.cache
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.sourcelink.json
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.dll
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\refint\OpenClawNet.Models.Abstractions.dll
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\OpenClawNet.Models.Abstractions.pdb
+D:\openclawnet\openclawnet\src\OpenClawNet.Models.Abstractions\obj\Debug\net10.0\ref\OpenClawNet.Models.Abstractions.dll

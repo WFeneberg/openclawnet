@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "7uE3bDImWcc=",
+  "success": true,
+  "projectFilePath": "D:\\openclawnet\\openclawnet\\src\\OpenClawNet.Models.Abstractions\\OpenClawNet.Models.Abstractions.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\brunocapuano\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.5\\microsoft.extensions.dependencyinjection.abstractions.10.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
