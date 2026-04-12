@@ -1,0 +1,16 @@
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\bin\Debug\net10.0\OpenClawNet.Models.Ollama.deps.json
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\bin\Debug\net10.0\OpenClawNet.Models.Ollama.dll
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\bin\Debug\net10.0\OpenClawNet.Models.Ollama.pdb
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\bin\Debug\net10.0\OpenClawNet.Models.Abstractions.dll
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\bin\Debug\net10.0\OpenClawNet.Models.Abstractions.pdb
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.csproj.AssemblyReference.cache
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.GeneratedMSBuildEditorConfig.editorconfig
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.AssemblyInfoInputs.cache
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.AssemblyInfo.cs
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.csproj.CoreCompileInputs.cache
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.sourcelink.json
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClaw.EBFA9861.Up2Date
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.dll
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\refint\OpenClawNet.Models.Ollama.dll
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\OpenClawNet.Models.Ollama.pdb
+D:\openclawnet\openclawnet\sessions\session-1\src\OpenClawNet.Models.Ollama\obj\Debug\net10.0\ref\OpenClawNet.Models.Ollama.dll
