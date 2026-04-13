@@ -24,7 +24,7 @@ Welcome to OpenClawNet! This repository contains session materials and working c
 
 Walk through a pre-built .NET 10 solution: model abstractions, local LLM integration (Ollama/Foundry Local) with SSE streaming, EF Core storage, Gateway API, and a real-time Blazor chat UI — all orchestrated with Aspire.
 
-- 📊 [Slides](sessions/session-1/slides.html) · 💻 [Code](sessions/session-1/code/) · 🤖 [Copilot Prompts](sessions/session-1/copilot-prompts.md)
+- 📦 *Materials available on session day*
 - 🇺🇸 [Register](https://developer.microsoft.com/en-us/reactor/events/26919/) · 🇪🇸 [Registrarse](https://developer.microsoft.com/en-us/reactor/events/26923/)
 
 ---
@@ -65,14 +65,9 @@ Connect Azure OpenAI and Foundry providers, add cron-based job scheduling, run t
 # Clone the repo
 git clone https://github.com/elbruno/openclawnet.git
 cd openclawnet
-
-# Build and run (requires .NET 10 SDK + Local LLM)
-# Navigate to any session's stage-3-final:
-cd sessions/session-1/code/stage-3-final
-dotnet run --project src/OpenClawNet.AppHost
 ```
 
-The Aspire dashboard opens at `https://localhost:15888` — from there you can access the Gateway and Blazor Web UI.
+Session code and materials are published on the day of each live session. Register at the links above to be notified!
 
 ---
 
