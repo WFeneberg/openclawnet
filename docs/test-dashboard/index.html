@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -169,21 +169,29 @@ body{
     <span class="hero-logo">&#x1F980;</span>
     <div>
       <div class="hero-title">OpenClawNet</div>
-      <div class="hero-subtitle">End-to-End Test Dashboard &mdash; Playwright + Aspire</div>
+      <div class="hero-subtitle">Test Dashboard &mdash; Unit Tests + E2E (Playwright + Aspire)</div>
     </div>
     <div class="hero-badge">
-      <span class="big"><!-- TOTAL_PASSED -->52<!-- /TOTAL_PASSED --> / <!-- TOTAL_TESTS -->52<!-- /TOTAL_TESTS --></span>
+      <span class="big"><!-- TOTAL_PASSED -->146<!-- /TOTAL_PASSED --> / <!-- TOTAL_TESTS -->146<!-- /TOTAL_TESTS --></span>
       All Tests Passing
     </div>
   </div>
 </header>
 <section class="container">
   <div class="summary-bar">
-    <div class="stat-card stat-total"><div class="stat-value"><!-- TOTAL_TESTS -->52<!-- /TOTAL_TESTS --></div><div class="stat-label">Total Tests</div></div>
-    <div class="stat-card stat-passed"><div class="stat-value"><!-- TOTAL_PASSED -->52<!-- /TOTAL_PASSED --></div><div class="stat-label">Passed</div></div>
+    <div class="stat-card stat-total"><div class="stat-value"><!-- TOTAL_TESTS -->146<!-- /TOTAL_TESTS --></div><div class="stat-label">Total Tests</div></div>
+    <div class="stat-card stat-passed"><div class="stat-value"><!-- TOTAL_PASSED -->146<!-- /TOTAL_PASSED --></div><div class="stat-label">Passed</div></div>
     <div class="stat-card stat-failed"><div class="stat-value"><!-- TOTAL_FAILED -->0<!-- /TOTAL_FAILED --></div><div class="stat-label">Failed</div></div>
     <div class="stat-card stat-duration"><div class="stat-value"><!-- TOTAL_DURATION -->3m 49s<!-- /TOTAL_DURATION --></div><div class="stat-label">Duration</div></div>
   </div>
+<!-- SECTION: E2E TESTS -->
+<div style="margin: 24px 0; padding: 12px 0;">
+  <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--primary-light); display: flex; align-items: center; gap: 10px;">
+    <span>&#x1F3AD;</span> E2E Tests (Playwright + Aspire)
+    <span style="font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-left: auto;">52 tests &bull; 3m 49s</span>
+  </h2>
+  <p style="font-size: 0.85rem; color: var(--muted); margin-top: 6px;">Full-stack tests with Aspire AppHost + headless Chromium. Requires Ollama for model-dependent tests.</p>
+</div>
 <!-- BEGIN_DEMO_01 -->
   <div class="demo-card">
     <div class="demo-header">
@@ -345,13 +353,193 @@ body{
   </div>
 <!-- END_GATEWAY_ONLY -->
 
+
+<!-- SECTION: UNIT TESTS -->
+<div style="margin: 40px 0 24px; padding: 20px 0; border-top: 2px solid rgba(124,92,252,0.2);">
+  <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--teal-light); display: flex; align-items: center; gap: 10px;">
+    <span>&#x1F9EA;</span> Unit Tests
+    <span style="font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-left: auto;">94 tests &bull; &lt; 1s total</span>
+  </h2>
+  <p style="font-size: 0.85rem; color: var(--muted); margin-top: 6px;">Fast isolated tests &mdash; no Aspire, no Ollama, no network. Run with <code style="font-family:'JetBrains Mono',monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; color: var(--teal-light);">dotnet test tests/OpenClawNet.UnitTests</code></p>
+</div>
+
+<!-- BEGIN_UNIT_TOOLS -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">TOOLS</span>
+      <span class="demo-title">File System &amp; Tool Registry</span>
+      <span class="demo-count">17 tests</span>
+      <span class="demo-desc">File operations, tool execution, and registry management</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteAsync &mdash; calls Tool_ When Found</div></div><span class="test-duration">34.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteAsync &mdash; returns Fail_ When Tool Not Found</div></div><span class="test-duration">2.7ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteBatchAsync &mdash; executes All Tools</div></div><span class="test-duration">25.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">FindProjects &mdash; excludes Bin And Obj Directories</div></div><span class="test-duration">11.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">FindProjects &mdash; returns Failure_ When Directory Not Found</div></div><span class="test-duration">2.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">FindProjects &mdash; returns Project Files_ When Csproj Exists</div></div><span class="test-duration">23.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetAllTools &mdash; returns Registered Tools</div></div><span class="test-duration">34.4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetTool &mdash; is Case Insensitive</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetTool &mdash; returns Null_ When Not Found</div></div><span class="test-duration">1.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetToolManifest &mdash; returns Metadata</div></div><span class="test-duration">5.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">List &mdash; relative Path_ Lists Workspace Directory</div></div><span class="test-duration">5.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">List &mdash; with Absolute Path_ Lists Directory</div></div><span class="test-duration">8.5ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Read &mdash; blocked Path_ Also Blocks Absolute Variants</div></div><span class="test-duration">41.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Read &mdash; blocked Path_ Returns Failure</div></div><span class="test-duration">7.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Read &mdash; with Absolute Path_ Reads File</div></div><span class="test-duration">8.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Register &mdash; adds Tool To Registry</div></div><span class="test-duration">1.5ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Write &mdash; then Read_ Round Trips</div></div><span class="test-duration">7.1ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_TOOLS -->
+<!-- BEGIN_UNIT_STORAGE -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">STORAGE</span>
+      <span class="demo-title">Conversation Store</span>
+      <span class="demo-count">9 tests</span>
+      <span class="demo-desc">Session management and message persistence</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddMessage &mdash; auto Created Session_ Has Default Title</div></div><span class="test-duration">49.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddMessage &mdash; auto Creates Session_ When Session Not Found</div></div><span class="test-duration">1.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddMessage &mdash; increments Order Index</div></div><span class="test-duration">2.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddMessage &mdash; stores Message</div></div><span class="test-duration">2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CreateSession &mdash; returns New Session</div></div><span class="test-duration">1.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">DeleteSession &mdash; removes Session</div></div><span class="test-duration">11.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetSession &mdash; returns Null When Not Found</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ListSessions &mdash; returns Ordered By Updated At</div></div><span class="test-duration">757.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">UpdateSessionTitle &mdash; changes Title</div></div><span class="test-duration">4.4ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_STORAGE -->
+<!-- BEGIN_UNIT_SKILLS -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">SKILLS</span>
+      <span class="demo-title">Skill Loading &amp; Parsing</span>
+      <span class="demo-count">16 tests</span>
+      <span class="demo-desc">Skill discovery, installation, and metadata parsing</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">BuiltInSkills &mdash; have Source Built In</div></div><span class="test-duration">30.4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">DisableSkill &mdash; excludes It From Active Skills</div></div><span class="test-duration">8.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">EnableSkill &mdash; restores It To Active Skills</div></div><span class="test-duration">12.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">InstallSkillAsync &mdash; creates Skill Md In Installed Directory</div></div><span class="test-duration">7.3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">InstallSkillAsync &mdash; sets Source To Installed</div></div><span class="test-duration">10.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">InstallSkillAsync &mdash; skill Appears In List After Install</div></div><span class="test-duration">6.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Parse &mdash; with Disabled Flag_ Sets Enabled</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Parse &mdash; with Empty Content_ Returns Empty Body</div></div><span class="test-duration">36ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Parse &mdash; without Frontmatter_ Uses File Name</div></div><span class="test-duration">9.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Parse &mdash; with Valid Frontmatter_ Extracts Metadata</div></div><span class="test-duration">8.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ReloadAsync &mdash; ignores Subdirectories Without Skill Md</div></div><span class="test-duration">5.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ReloadAsync &mdash; loads Flat Md Files</div></div><span class="test-duration">5.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ReloadAsync &mdash; loads Subdirectory Skill Md</div></div><span class="test-duration">7.7ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">UninstallSkillAsync &mdash; deletes Directory</div></div><span class="test-duration">7.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">UninstallSkillAsync &mdash; does Not Throw_ When Skill Not Found</div></div><span class="test-duration">41.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">UninstallSkillAsync &mdash; removes Skill From List</div></div><span class="test-duration">6.9ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_SKILLS -->
+<!-- BEGIN_UNIT_SCHEDULER -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">SCHEDULER</span>
+      <span class="demo-title">Job Scheduler</span>
+      <span class="demo-count">10 tests</span>
+      <span class="demo-desc">Concurrent task scheduling and settings persistence</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Decrement &mdash; decreases Count</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetSettings &mdash; reads From Configuration</div></div><span class="test-duration">2.5ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">GetSettings &mdash; returns Defaults_ When No File Or Config</div></div><span class="test-duration">2.3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Increment &mdash; increases Count</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">InitialCount &mdash; is Zero</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">IsThreadSafe &mdash; under Concurrent Increment Decrement</div></div><span class="test-duration">37.7ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Update &mdash; clamps Values_ When Out Of Range</div></div><span class="test-duration">26.3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Update &mdash; is Thread Safe_ Under Concurrent Writes</div></div><span class="test-duration">42.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Update &mdash; loaded File Overrides Config_ On Restart</div></div><span class="test-duration">3.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Update &mdash; persists To File</div></div><span class="test-duration">12.5ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_SCHEDULER -->
+<!-- BEGIN_UNIT_MODELS -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">MODELS</span>
+      <span class="demo-title">Model Providers (Ollama &amp; Azure)</span>
+      <span class="demo-count">31 tests</span>
+      <span class="demo-desc">LLM client configuration and request/response handling</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddAzureOpenAI &mdash; default Deployment Name_ Is Gpt5 Mini</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddAzureOpenAI &mdash; reads Endpoint From Azure Open A I Section_ Taking Precedence</div></div><span class="test-duration">4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddAzureOpenAI &mdash; reads Endpoint From Model Section</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AddAzureOpenAI &mdash; registers I Model Client</div></div><span class="test-duration">5.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; maps Chat Message Roles_ Correctly</div></div><span class="test-duration">1.9ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; maps Tool Calls From Response</div></div><span class="test-duration">1.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; returns Usage Info</div></div><span class="test-duration">1.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; sends Model And Messages</div></div><span class="test-duration">1.4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; sends Stream False_ For Non Streaming</div></div><span class="test-duration">17.5ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; serializes Tools_ When Provided</div></div><span class="test-duration">5.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">CompleteAsync &mdash; throws_ When Not Configured</div></div><span class="test-duration">71.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; does Not Throw_ When Api Key Mode Fully Configured</div></div><span class="test-duration">1.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; does Not Throw_ When Integrated Mode With Endpoint Only</div></div><span class="test-duration">1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; handles Integrated Auth Mode_ Case Insensitively(auth Mode: " I N T...</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; handles Integrated Auth Mode_ Case Insensitively(auth Mode: " Integ...</div></div><span class="test-duration">1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; handles Integrated Auth Mode_ Case Insensitively(auth Mode: "integr...</div></div><span class="test-duration">84.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; leaves Client Null_ When Api Key Missing In Api Key Mode</div></div><span class="test-duration">1.2ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Constructor &mdash; leaves Client Null_ When Integrated Mode But No Endpoint</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">DefaultOptions &mdash; have Gpt5 Mini Deployment</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">DefaultOptions &mdash; use Api Key Auth Mode</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">IsAvailableAsync &mdash; returns False_ When Endpoint Not Configured</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Options &mdash; empty Deployment Keeps Default_ When Not Set In Config</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ProviderName &mdash; is Azure Open A I</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; extracts Tool Calls_ From Done False Chunk</div></div><span class="test-duration">1.4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; generates Synthetic Id_ When Ollama Omits Id</div></div><span class="test-duration">3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; multiple Tool Calls_ In Single Chunk</div></div><span class="test-duration">1.3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; preserves Tool Call Ids_ From Ollama</div></div><span class="test-duration">1.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; sends Stream True_ In Request</div></div><span class="test-duration">1.7ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; throws_ When Not Configured</div></div><span class="test-duration">5.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; tool Calls In Done True Chunk_ Still Extracted</div></div><span class="test-duration">122ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">StreamAsync &mdash; tool Calls Then Content_ Both Preserved</div></div><span class="test-duration">1.6ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_MODELS -->
+<!-- BEGIN_UNIT_AGENT -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">AGENT</span>
+      <span class="demo-title">Agent Runtime &amp; Prompts</span>
+      <span class="demo-count">11 tests</span>
+      <span class="demo-desc">Streaming agent execution and prompt composition</span>
+    </div>
+    <div class="test-list">
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">AgentStreamEventType &mdash; contains Tool Approval Request</div></div><span class="test-duration">&lt; 1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; fallback Prompt_ Contains Workspace Path</div></div><span class="test-duration">2.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; fallback Prompt_ Instructs File System Tool Usage</div></div><span class="test-duration">3.3ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; includes History</div></div><span class="test-duration">32ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; includes Session Summary</div></div><span class="test-duration">2.1ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; includes System Prompt</div></div><span class="test-duration">16.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ComposeAsync &mdash; uses Agents Md_ When Workspace Provides</div></div><span class="test-duration">2.8ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteStreamAsync &mdash; does Not Emit Tool Approval Request_ For Non Approval Tools</div></div><span class="test-duration">813.6ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteStreamAsync &mdash; emits Tool Approval Request_ Before Tool Call Start_ For App...</div></div><span class="test-duration">9.4ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteStreamAsync &mdash; yields Error_ When Prompt Compose Throws</div></div><span class="test-duration">5ms</span></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ExecuteStreamAsync &mdash; yields Error_ When Storage Fails On User Message</div></div><span class="test-duration">8.4ms</span></div>
+    </div>
+  </div>
+<!-- END_UNIT_AGENT -->
+
+
   <details class="info-panel">
     <summary>&#x2139;&#xFE0F; About this Dashboard &mdash; How to Run Tests &amp; Environment Info</summary>
     <div class="info-content">
       <h3>Running Tests Locally</h3>
       <ul>
         <li>Set NuGet packages: <code>$env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"</code></li>
-        <li>Run all tests: <code>dotnet test tests/OpenClawNet.PlaywrightTests/</code></li>
+        <li>Run unit tests only: <code>dotnet test tests/OpenClawNet.UnitTests</code></li>
+        <li>Run E2E tests only: <code>dotnet test tests/OpenClawNet.PlaywrightTests/</code></li>
+        <li>Run live tests (Ollama + Azure): <code>dotnet test --filter "Category=Live"</code></li>
         <li>Skip model-dependent tests: <code>dotnet test --filter "Category!=RequiresModel"</code></li>
         <li>Generate HTML report: <code>dotnet test --logger "html;LogFileName=results.html"</code></li>
       </ul>
@@ -365,7 +553,7 @@ body{
       <h3>CI / CD</h3>
       <p>Tests run in <a href="https://github.com/elbruno/openclawnet-plan/actions" target="_blank">GitHub Actions (private repo)</a>. Results are published here automatically via <code>publish-test-dashboard.ps1</code>.</p>
       <h3>Last Updated</h3>
-      <p><!-- LAST_UPDATED -->2026-04-14<!-- /LAST_UPDATED --></p>
+      <p><!-- LAST_UPDATED -->2026-04-15<!-- /LAST_UPDATED --></p>
     </div>
   </details>
 </section>
