@@ -1,9 +1,21 @@
-name: Deploy Test Dashboard
+name: Deploy GitHub Pages
+
+# Publishes the OpenClaw .NET public site:
+#   /                       -> docs/landing/index.html (hub page)
+#   /test-dashboard/        -> docs/test-dashboard/   (live test results)
+#   /sessions/session-N/    -> sessions/session-N/    (slides + assets)
+#
+# To add a new session: drop slides.html in sessions/session-N/ and update
+# docs/landing/index.html — the workflow picks them up automatically.
 
 on:
   push:
     branches: [main]
-    paths: ['docs/test-dashboard/**']
+    paths:
+      - 'docs/landing/**'
+      - 'docs/test-dashboard/**'
+      - 'sessions/**'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -28,10 +40,26 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Assemble _site
+        run: |
+          set -e
+          mkdir -p _site
+          # Landing page goes to root
+          cp -R docs/landing/. _site/
+          # Test dashboard
+          mkdir -p _site/test-dashboard
+          cp -R docs/test-dashboard/. _site/test-dashboard/
+          # Sessions (slides + any session assets)
+          mkdir -p _site/sessions
+          cp -R sessions/. _site/sessions/
+          echo "::group::Site contents"
+          find _site -maxdepth 3 -type f | sort
+          echo "::endgroup::"
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/test-dashboard/
+          path: _site/
 
       - name: Deploy to GitHub Pages
         id: deployment

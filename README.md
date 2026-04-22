@@ -6,6 +6,8 @@ OpenClaw .NET is the companion repo for the **Microsoft Reactor live series** on
 
 > 👉 **First time here? Start with [SETUP.md](./SETUP.md)** for a step‑by‑step local setup (prerequisites, hardware, clone, build, run, first chat, troubleshooting).
 
+> 🌐 **Browse the published site:** **<https://elbruno.github.io/openclawnet/>** — session slides, live test dashboard, and quick links to materials.
+
 ---
 
 ## 📺 Reactor Series — Register
