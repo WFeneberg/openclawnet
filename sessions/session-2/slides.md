@@ -17,6 +17,11 @@ footer: "OpenClawNet · Session 2 · Tools & Agent Workflows"
 
 > *Tools turn a chatbot into a coworker.*
 
+<br>
+
+**Bruno Capuano** — Principal Cloud Advocate, Microsoft
+[github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
+
 <!--
 SPEAKER NOTES — title slide.
 Hi everyone, welcome back. Session 1 we got a real Blazor + Aspire app talking to local and cloud LLMs. Today we close the gap between "chatbot" and "agent": we give the model the ability to actually DO things — read files, run shells, call APIs, even launch other agents. We'll do it twice: with our own ITool framework AND with MCP servers. Same agent. Same approval gate. One mental model.
@@ -773,8 +778,12 @@ Session 3 is about memory — we've been keeping every message in a list this wh
 
 # Questions?
 
-`elbruno/openclawnet` · MIT licensed · contributions welcome
+**Bruno Capuano** — Principal Cloud Advocate, Microsoft
+[github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
+<br>
+
+`elbruno/openclawnet` · MIT licensed · contributions welcome
 `docs/sessions/session-2/` for everything from today
 
 <!--
