@@ -18,7 +18,7 @@ size: 16:9
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Piovano** — Cloud Advocate, Microsoft
+**Pablo Piovano** — Microsoft MVP
 [linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>
@@ -296,7 +296,7 @@ Luego:
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Piovano** — Cloud Advocate, Microsoft
+**Pablo Piovano** — Microsoft MVP
 [linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>

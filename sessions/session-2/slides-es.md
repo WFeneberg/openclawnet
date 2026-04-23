@@ -24,7 +24,7 @@ footer: "OpenClawNet · Sesión 2 · Tools y Workflows de Agentes"
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Piovano** — Cloud Advocate, Microsoft
+**Pablo Piovano** — Microsoft MVP
 [linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>
@@ -790,7 +790,7 @@ La Sesión 3 trata de memoria — hemos estado guardando cada mensaje en una lis
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Piovano** — Cloud Advocate, Microsoft
+**Pablo Piovano** — Microsoft MVP
 [linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>
