@@ -902,28 +902,28 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <section class="title-slide">
 <h1>🦀 OpenClaw .NET</h1>
 <h2>Sesión 1: Fundamentos + Chat Local</h2>
-<h3>Construyendo una Plataforma de Agentes de IA con .NET</h3>
+<h3>Construyendo una Plataforma de Agentes IA con .NET</h3>
 <div class="presenter-info">
 
 <p>Bruno Capuano · Pablo Piovano · Serie Microsoft Reactor</p>
 </div>
-<aside class="notes"><p>¡Bienvenidos! Este es un viaje de 5 sesiones. Todo el código ya está construido — estamos aquí para entender cada capa. Al final de hoy tendrás una pila de IA completa y funcionando en tu máquina.</p>
+<aside class="notes"><p>¡Bienvenidos! Este es un viaje de 5 sesiones. Todo el código ya está construido — estamos aquí para entender cada capa. Al final de hoy tendrás un stack completo de IA funcionando en tu máquina.</p>
 </aside>
 </section>
 <section class="content-slide">
 <h2>Hoja de Ruta de la Serie</h2>
 <div class="roadmap-timeline">
 
-<p><strong>→ Sesión 1:</strong> Fundamentos + Chat Local<br><em>Arquitectura, origen de OpenClaw, LLMs Locales, HTTP Streaming</em></p>
+<p><strong>→ Sesión 1:</strong> Fundamentos + Chat Local<br><em>Arquitectura, origen de OpenClaw, LLMs Locales, Streaming HTTP</em></p>
 <p><strong>Sesiones 2–5 (Próximamente):</strong></p>
 <ul>
-<li>Herramientas y Flujos de Trabajo de Agentes</li>
-<li>Habilidades y Memoria  </li>
-<li>Automatización y Nube</li>
-<li>Canales, Navegador y Eventos</li>
+<li>Tools &amp; Flujos de Agentes</li>
+<li>Skills &amp; Memoria  </li>
+<li>Automatización &amp; Cloud</li>
+<li>Canales, Browser &amp; Eventos</li>
 </ul>
 </div>
-<aside class="notes"><p>5 sesiones. Cada una se construye sobre la anterior. Hoy = el fundamento del que todo depende.</p>
+<aside class="notes"><p>5 sesiones. Cada una se construye sobre la anterior. Hoy = los fundamentos de los que todo depende.</p>
 </aside>
 </section>
 <section class="content-slide">
@@ -931,12 +931,12 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <div class="two-col">
 <div>
 
-<p>OpenClaw es una plataforma de agentes de código abierto — una <strong>arquitectura de referencia</strong> para construir agentes de IA con:</p>
+<p>OpenClaw es una plataforma de agentes de código abierto — una <strong>arquitectura de referencia</strong> para construir agentes IA con:</p>
 <ul>
 <li>Gateway persistente como plano de control <!-- .element: class="fragment" --></li>
 <li>Runtime de agentes consciente del workspace <!-- .element: class="fragment" --></li>
-<li>Herramientas, habilidades y memoria de primera clase <!-- .element: class="fragment" --></li>
-<li>Abstracción de modelo multi-proveedor <!-- .element: class="fragment" --></li>
+<li>Tools, skills y memoria de primera clase <!-- .element: class="fragment" --></li>
+<li>Abstracción de modelos multi-proveedor <!-- .element: class="fragment" --></li>
 <li>Canales: Teams, WhatsApp, Telegram... <!-- .element: class="fragment" --></li>
 </ul>
 </div>
@@ -945,14 +945,14 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <p><strong>Los 9 Pilares:</strong></p>
 <ol>
 <li>Gateway como Plano de Control</li>
-<li>Runtime del Agente + Workspace</li>
-<li>Sesiones y Memoria</li>
-<li>Herramientas de Primera Clase</li>
-<li>Sistema de Habilidades</li>
-<li>Abstracción de Modelo</li>
+<li>Runtime de Agentes + Workspace</li>
+<li>Sesiones &amp; Memoria</li>
+<li>Tools de Primera Clase</li>
+<li>Sistema de Skills</li>
+<li>Abstracción de Modelos</li>
 <li>Automatización (cron + webhooks)</li>
 <li>Superficies de UI (Control + WebChat)</li>
-<li>Canales y Nodos</li>
+<li>Canales &amp; Nodos</li>
 </ol>
 </div>
 </div>
@@ -972,30 +972,30 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <tbody><tr>
 <td>Gateway como Plano de Control</td>
 <td><code>OpenClawNet.Gateway</code></td>
-<td>Minimal APIs + HTTP SSE + Scheduler</td>
+<td>Minimal APIs + HTTP NDJSON + Scheduler</td>
 </tr>
 <tr>
-<td>Runtime del Agente + Workspace</td>
+<td>Runtime de Agentes + Workspace</td>
 <td><code>IAgentOrchestrator</code> + <code>WorkspaceLoader</code></td>
 <td>AGENTS.md / SOUL.md / USER.md</td>
 </tr>
 <tr>
-<td>Sesiones y Memoria</td>
+<td>Sesiones &amp; Memoria</td>
 <td><code>IMemoryService</code> + <code>ISummaryService</code></td>
 <td>EF Core + SQLite + compactación</td>
 </tr>
 <tr>
-<td>Herramientas de Primera Clase</td>
+<td>Tools de Primera Clase</td>
 <td><code>ITool</code> + FileSystem, Shell, Web, Browser</td>
-<td>Navegador con Playwright</td>
+<td>Browser respaldado por Playwright</td>
 </tr>
 <tr>
-<td>Sistema de Habilidades</td>
+<td>Sistema de Skills</td>
 <td><code>SkillLoader</code></td>
 <td>Markdown/YAML con precedencia</td>
 </tr>
 <tr>
-<td>Abstracción de Modelo</td>
+<td>Abstracción de Modelos</td>
 <td><code>IAgentProvider</code> + <code>RuntimeAgentProvider</code></td>
 <td>Ollama, Azure OpenAI, Foundry, Foundry Local, GitHub Copilot</td>
 </tr>
@@ -1010,28 +1010,28 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <td>Ambas desde un proyecto</td>
 </tr>
 <tr>
-<td>Canales y Nodos</td>
+<td>Canales &amp; Nodos</td>
 <td><code>IChannel</code> + adaptador Teams</td>
 <td>Bot Framework; nodos móviles planeados</td>
 </tr>
 </tbody></table>
 
-<aside class="notes"><p>Esta es la tabla de traducción. Cada pilar de OpenClaw se mapea a un tipo o proyecto .NET.</p>
+<aside class="notes"><p>Esta es la tabla de traducción. Cada pilar de OpenClaw mapea a un tipo o proyecto .NET.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>¿Qué Construiremos Hoy? — 3 Etapas</h2>
+<h2>Lo Que Construiremos Hoy — 3 Etapas</h2>
 <ul>
-<li><strong>Etapa 1:</strong> 🧱 Arquitectura y Abstracciones Clave (IAgentProvider, AgentProfile, records, DI) <!-- .element: class="fragment" --></li>
+<li><strong>Etapa 1:</strong> 🧱 Arquitectura &amp; Abstracciones Core (IAgentProvider, AgentProfile, records, DI) <!-- .element: class="fragment" --></li>
 <li><strong>Etapa 2:</strong> 🤖 LLMs Locales + Workspace + Almacenamiento (Ollama, FoundryLocal, archivos bootstrap, EF Core) <!-- .element: class="fragment" --></li>
-<li><strong>Etapa 3:</strong> ⚡ Gateway + HTTP SSE + Blazor (streaming en tiempo real, Aspire, demo del stack completo) <!-- .element: class="fragment" --></li>
+<li><strong>Etapa 3:</strong> ⚡ Gateway + HTTP NDJSON + Blazor (streaming en tiempo real, Aspire, demo full stack) <!-- .element: class="fragment" --></li>
 </ul>
 
 <aside class="notes"><p>3 etapas, ~15 min cada una. Cada etapa es un checkpoint ejecutable.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>Verificación de Requisitos</h2>
+<h2>Verificación de Prerequisitos</h2>
 <pre><code class="language-bash">dotnet --version   # 10.0.x
 code --version     # VS Code
 </code></pre>
@@ -1039,14 +1039,14 @@ code --version     # VS Code
 <pre><code class="language-bash">ollama list          # llama3.2
 foundry model list   # phi
 </code></pre>
-<p>Extensión de GitHub Copilot instalada y activa ✓</p>
+<p>GitHub Copilot extension instalada y activa ✓</p>
 
-<aside class="notes"><p>Verificación rápida. Se requieren .NET 10 y un LLM local. Copilot para los momentos en vivo.</p>
+<aside class="notes"><p>Verificación rápida. .NET 10 y un LLM local son requeridos. Copilot para los momentos en vivo.</p>
 </aside>
 </section>
 <section class="section-divider">
 <h1>Etapa 1</h1>
-<h2>Arquitectura y Abstracciones Clave</h2>
+<h2>Arquitectura &amp; Abstracciones Core</h2>
 <p>⏱️ 15 minutos</p>
 
 <aside class="notes"><p>Primero el panorama general — cómo está diseñada la plataforma.</p>
@@ -1058,10 +1058,10 @@ foundry model list   # phi
 │                      Blazor Web UI                        │
 │                   (OpenClawNet.Web)                        │
 ├──────────────────────────────────────────────────────────┤
-│              HTTP SSE + REST API                          │
+│            HTTP NDJSON + REST API                          │
 │              (OpenClawNet.Gateway)                         │
 ├──────────────────────────────────────────────────────────┤
-│              RuntimeAgentProvider (enrutador)              │
+│              RuntimeAgentProvider (router)                 │
 ├────────┬──────────┬─────────┬────────────┬──────────────┤
 │ Ollama │Azure AOAI│ Foundry │FoundryLocal│GitHub Copilot│
 ├────────┴──────────┴─────────┴────────────┴──────────────┤
@@ -1070,11 +1070,11 @@ foundry model list   # phi
 </code></pre>
 <p><strong>Arquitectura completa en la guía de la sesión — hoy nos enfocamos en las capas fundamentales</strong></p>
 
-<aside class="notes"><p>El Gateway es el centro neurálgico — persistente, con estado, todo pasa por él. RuntimeAgentProvider enruta al proveedor activo.</p>
+<aside class="notes"><p>El Gateway es el centro nervioso — persistente, con estado, todo pasa a través de él. RuntimeAgentProvider enruta al proveedor activo. 6 proveedores totales incluyendo RuntimeAgentProvider.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>22 Proyectos, Una Responsabilidad Cada Uno</h2>
+<h2>27 Proyectos, Una Responsabilidad Cada Uno</h2>
 <table>
 <thead>
 <tr>
@@ -1086,17 +1086,17 @@ foundry model list   # phi
 <tbody><tr>
 <td>AppHost</td>
 <td>Orquestación</td>
-<td>Host de Aspire</td>
+<td>Host Aspire</td>
 </tr>
 <tr>
 <td>ServiceDefaults</td>
 <td>Orquestación</td>
-<td>Telemetría + salud</td>
+<td>Telemetría + health</td>
 </tr>
 <tr>
 <td>Gateway</td>
 <td>Gateway</td>
-<td>APIs, HTTP SSE streaming, planificador, canales</td>
+<td>APIs, streaming HTTP NDJSON, scheduler, canales</td>
 </tr>
 <tr>
 <td>Web</td>
@@ -1105,137 +1105,137 @@ foundry model list   # phi
 </tr>
 <tr>
 <td>Agent</td>
-<td>Agente</td>
+<td>Agent</td>
 <td>Orquestador, compositor de prompts, cargador de workspace</td>
 </tr>
 <tr>
 <td>Models.Abstractions</td>
-<td>Proveedor</td>
+<td>Provider</td>
 <td><code>IAgentProvider</code>, <code>AgentProfile</code>, <code>ChatMessage</code>, <code>ToolDefinition</code></td>
 </tr>
 <tr>
 <td>Models.Ollama</td>
-<td>Proveedor</td>
-<td>Proveedor REST de Ollama</td>
+<td>Provider</td>
+<td>Proveedor REST Ollama</td>
 </tr>
 <tr>
 <td>Models.FoundryLocal</td>
-<td>Proveedor</td>
+<td>Provider</td>
 <td>Proveedor Foundry en dispositivo</td>
 </tr>
 <tr>
 <td>Models.AzureOpenAI</td>
-<td>Proveedor</td>
-<td>SDK de Azure OpenAI</td>
+<td>Provider</td>
+<td>SDK Azure OpenAI</td>
 </tr>
 <tr>
 <td>Models.Foundry</td>
-<td>Proveedor</td>
-<td>Proveedor cloud de Foundry</td>
+<td>Provider</td>
+<td>Proveedor Foundry cloud</td>
 </tr>
 <tr>
 <td>Models.GitHubCopilot</td>
-<td>Proveedor</td>
-<td>Proveedor SDK de GitHub Copilot</td>
+<td>Provider</td>
+<td>Proveedor SDK GitHub Copilot</td>
 </tr>
 <tr>
 <td>Tools.Abstractions</td>
-<td>Herramientas</td>
+<td>Tools</td>
 <td><code>ITool</code>, <code>IToolRegistry</code>, <code>IToolExecutor</code></td>
 </tr>
 <tr>
 <td>Tools.Core</td>
-<td>Herramientas</td>
-<td>Registro + ejecutor</td>
+<td>Tools</td>
+<td>Registry + executor</td>
 </tr>
 <tr>
 <td>Tools.FileSystem</td>
-<td>Herramientas</td>
+<td>Tools</td>
 <td>Lectura/escritura segura de archivos</td>
 </tr>
 <tr>
 <td>Tools.Shell</td>
-<td>Herramientas</td>
+<td>Tools</td>
 <td>Ejecución de comandos</td>
 </tr>
 <tr>
 <td>Tools.Web</td>
-<td>Herramientas</td>
+<td>Tools</td>
 <td>Fetch HTTP</td>
 </tr>
 <tr>
 <td>Tools.Scheduler</td>
-<td>Herramientas</td>
-<td>Herramienta de planificación de tareas</td>
+<td>Tools</td>
+<td>Tool de programación de jobs</td>
 </tr>
 <tr>
 <td>Tools.Browser</td>
-<td>Herramientas</td>
-<td>Navegador headless con Playwright</td>
+<td>Tools</td>
+<td>Browser headless Playwright</td>
 </tr>
 <tr>
 <td>Skills</td>
-<td>Habilidades</td>
-<td>Parser + cargador Markdown</td>
+<td>Skills</td>
+<td>Parser + cargador de Markdown</td>
 </tr>
 <tr>
 <td>Memory</td>
-<td>Memoria</td>
+<td>Memory</td>
 <td>Resumen, embeddings, búsqueda</td>
 </tr>
 <tr>
 <td>Storage</td>
-<td>Almacenamiento</td>
+<td>Storage</td>
 <td>EF Core + SQLite</td>
 </tr>
 <tr>
 <td>Adapters.Teams</td>
-<td>Canales</td>
+<td>Channels</td>
 <td>Adaptador Bot Framework</td>
 </tr>
 <tr>
 <td>UnitTests + IntegrationTests</td>
-<td>Pruebas</td>
-<td>Suite de pruebas xUnit</td>
+<td>Tests</td>
+<td>Suite de tests xUnit</td>
 </tr>
 </tbody></table>
 
-<aside class="notes"><p>Cada proyecto = una responsabilidad. Esto hace el código navegable y testeable.</p>
+<aside class="notes"><p>Cada proyecto = una preocupación. Esto hace el código navegable y testeable. 27 proyectos totales incluyendo scheduler, shell, browser, canales y servicios de memoria.</p>
 </aside>
 </section>
 <section class="content-slide">
 <h2>Los 9 Pilares en Código</h2>
 <ul>
 <li><strong>1. Gateway</strong> → <code>OpenClawNet.Gateway</code> (proceso persistente) <!-- .element: class="fragment" --></li>
-<li><strong>2. Runtime del Agente + Workspace</strong> → <code>IAgentOrchestrator</code> + <code>WorkspaceLoader</code> <!-- .element: class="fragment" --></li>
-<li><strong>3. Sesiones y Memoria</strong> → <code>IMemoryService</code> + <code>ISummaryService</code> <!-- .element: class="fragment" --></li>
-<li><strong>4. Herramientas</strong> → <code>ITool</code> + FileSystem, Shell, Web, Browser, Scheduler <!-- .element: class="fragment" --></li>
-<li><strong>5. Habilidades</strong> → <code>SkillLoader</code> (workspace &gt; local &gt; bundle) <!-- .element: class="fragment" --></li>
-<li><strong>6. Abstracción de Modelo</strong> → <code>IAgentProvider</code> + <code>RuntimeAgentProvider</code> (5 proveedores) <!-- .element: class="fragment" --></li>
+<li><strong>2. Runtime de Agentes + Workspace</strong> → <code>IAgentOrchestrator</code> + <code>WorkspaceLoader</code> <!-- .element: class="fragment" --></li>
+<li><strong>3. Sesiones &amp; Memoria</strong> → <code>IMemoryService</code> + <code>ISummaryService</code> <!-- .element: class="fragment" --></li>
+<li><strong>4. Tools</strong> → <code>ITool</code> + FileSystem, Shell, Web, Browser, Scheduler <!-- .element: class="fragment" --></li>
+<li><strong>5. Skills</strong> → <code>SkillLoader</code> (workspace &gt; local &gt; bundle) <!-- .element: class="fragment" --></li>
+<li><strong>6. Abstracción de Modelos</strong> → <code>IAgentProvider</code> + <code>RuntimeAgentProvider</code> (6 proveedores) <!-- .element: class="fragment" --></li>
 <li><strong>7. Automatización</strong> → <code>JobSchedulerService</code> + WebhookEndpoints <!-- .element: class="fragment" --></li>
 <li><strong>8. Superficies de UI</strong> → Blazor (Control UI + WebChat, misma app) <!-- .element: class="fragment" --></li>
-<li><strong>9. Canales y Nodos</strong> → <code>IChannel</code> + Teams + concepto de nodo <!-- .element: class="fragment" --></li>
+<li><strong>9. Canales &amp; Nodos</strong> → <code>IChannel</code> + Teams + concepto de nodo <!-- .element: class="fragment" --></li>
 </ul>
 
-<aside class="notes"><p>Una diapositiva, 9 pilares. Cada uno es un tema de sesión en la serie.</p>
+<aside class="notes"><p>Una slide, 9 pilares. Cada uno es un tema de sesión en la serie.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>Herramientas y Habilidades</h2>
-<p><strong>Herramientas</strong> — capacidades de llamada a funciones</p>
+<h2>Tools &amp; Skills</h2>
+<p><strong>Tools</strong> — capacidades de function-calling</p>
 <ul>
 <li><code>file_system</code>, <code>web_search</code>, <code>shell_exec</code></li>
-<li>Implementadas como <code>ITool</code> + <code>ToolAIFunction</code> (Agent Framework)</li>
+<li>Implementados como <code>ITool</code> + <code>ToolAIFunction</code> (Agent Framework)</li>
 </ul>
-<p><strong>Habilidades Agent Framework</strong> — revelación progresiva <!-- .element: class="fragment" --></p>
+<p><strong>Agent Framework Skills</strong> — divulgación progresiva <!-- .element: class="fragment" --></p>
 <ul>
 <li>Especificación <code>SKILL.md</code> (agentskills.io) <!-- .element: class="fragment" --></li>
-<li>Patrón Advertir → Cargar → Ejecutar <!-- .element: class="fragment" --></li>
+<li>Patrón Anunciar → Cargar → Ejecutar <!-- .element: class="fragment" --></li>
 <li><code>AgentSkillsProvider</code> de <code>Microsoft.Agents.AI</code> <!-- .element: class="fragment" --></li>
 </ul>
-<p><strong>Resultado</strong>: El agente sabe QUÉ puede hacer (habilidades), CÓMO hacerlo (herramientas) <!-- .element: class="fragment" --></p>
+<p><strong>Resultado</strong>: El agente sabe QUÉ puede hacer (skills), CÓMO hacerlo (tools) <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Las herramientas son las acciones. Las habilidades son el contexto. AgentSkillsProvider le dice al modelo qué habilidades están disponibles antes de cada llamada — revelación progresiva.</p>
+<aside class="notes"><p>Los tools son las acciones. Los skills son el contexto. AgentSkillsProvider informa al modelo qué skills están disponibles antes de cada llamada — divulgación progresiva.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1244,13 +1244,7 @@ foundry model list   # phi
 {
     string ProviderName { get; }
 
-    Task&lt;ChatResponse&gt; CompleteAsync(
-        ChatRequest request,
-        CancellationToken ct = default);
-
-    IAsyncEnumerable&lt;ChatResponseChunk&gt; StreamAsync(
-        ChatRequest request,
-        CancellationToken ct = default);
+    IChatClient CreateChatClient(AgentProfile profile);
 
     Task&lt;bool&gt; IsAvailableAsync(
         CancellationToken ct = default);
@@ -1258,7 +1252,7 @@ foundry model list   # phi
 </code></pre>
 <p><small>📁 <code>src/OpenClawNet.Models.Abstractions/IAgentProvider.cs</code></small></p>
 
-<aside class="notes"><p>Tres métodos. Cada proveedor implementa exactamente este contrato. RuntimeAgentProvider enruta al proveedor activo — cambia Ollama por Azure o GitHub Copilot en tiempo de ejecución.</p>
+<aside class="notes"><p>Dos métodos. Cada proveedor implementa exactamente este contrato. CreateChatClient devuelve un IChatClient configurado para el perfil del agente — este es el punto de integración con MAF. RuntimeAgentProvider enruta al proveedor activo — cambia Ollama por Azure o GitHub Copilot en tiempo de ejecución.</p>
 </aside>
 </section>
 <section class="architecture-slide">
@@ -1267,10 +1261,10 @@ foundry model list   # phi
 │                      Blazor Web UI                        │
 │                   (OpenClawNet.Web)                        │
 ├──────────────────────────────────────────────────────────┤
-│              HTTP SSE + REST API                          │
+│            HTTP NDJSON + REST API                          │
 │              (OpenClawNet.Gateway)                         │
 ├──────────────────────────────────────────────────────────┤
-│              RuntimeAgentProvider (enrutador)              │
+│              RuntimeAgentProvider (router)                 │
 ├────────┬──────────┬─────────┬────────────┬──────────────┤
 │ Ollama │Azure AOAI│ Foundry │FoundryLocal│GitHub Copilot│
 └────────┴──────────┴─────────┴────────────┴──────────────┘
@@ -1281,34 +1275,34 @@ foundry model list   # phi
 </aside>
 </section>
 <section class="demo-transition">
-<h2>🎬 Demo en Vivo 1: Cambio de Proveedor — Sin Código</h2>
-<p><strong>Qué haremos:</strong> Cambiar de Ollama local → Azure OpenAI → mismo chat, diferente backend</p>
-<p><strong>Cómo:</strong> Usar la página de Configuración — cambiar proveedor, guardar, iniciar nuevo chat</p>
-<p><strong>Punto de enseñanza:</strong> La abstracción <code>IAgentProvider</code> habilita flexibilidad en tiempo de ejecución con 5 proveedores</p>
+<h2>🎬 Demo en Vivo 1: Cambio de Provider — Sin Código</h2>
+<p><strong>Lo que haremos:</strong> Cambiar de Ollama local → Azure OpenAI → mismo chat, diferente backend</p>
+<p><strong>Cómo:</strong> Usar la página de Model Providers — configurar proveedor, guardar, iniciar nuevo chat</p>
+<p><strong>Punto de enseñanza:</strong> La abstracción <code>IAgentProvider</code> habilita flexibilidad en tiempo de ejecución entre 6 proveedores. Las definiciones de Model Provider ahora controlan el endpoint de chat real vía sincronización <code>ProviderResolver</code> → <code>RuntimeModelSettings</code>.</p>
 <p><strong>Sin cambios de código. Sin reinicios. Solo configuración.</strong></p>
 
-<aside class="notes"><p>Este es el poder de la abstracción limpia. Misma interfaz, diferente implementación, cambio en tiempo de ejecución.</p>
+<aside class="notes"><p>Este es el poder de la abstracción limpia. Misma interfaz, diferente implementación, intercambio en tiempo de ejecución. El ProviderResolver conecta definiciones de BD al runtime — lo que configuras en la UI es exactamente lo que usa el chat.</p>
 </aside>
 </section>
 <section class="code-slide">
 <h2>Microsoft Agent Framework</h2>
-<p><strong><code>AIAgent</code></strong> — la abstracción central</p>
+<p><strong><code>AIAgent</code></strong> — la abstracción core</p>
 <ul>
 <li><code>ChatClientAgent</code>: envuelve cualquier <code>IChatClient</code> (Ollama, Azure, Foundry)</li>
-<li><code>AgentSkillsProvider</code>: agrega contexto de habilidades (revelación progresiva)</li>
+<li><code>AgentSkillsProvider</code>: agrega contexto de skills (divulgación progresiva)</li>
 <li><code>RunAsync()</code> / <code>RunStreamingAsync()</code>: ejecución unificada</li>
 </ul>
 <p><strong>En OpenClawNet</strong>: <!-- .element: class="fragment" --></p>
 <pre><code class="language-csharp">var agent = new ChatClientAgent(
-    agentProviderAdapter, // Puente IAgentProvider → IChatClient
+    agentProviderAdapter, // IAgentProvider → bridge IChatClient
     new ChatClientAgentOptions {
         AIContextProviders = [skillsProvider]
     });
 await foreach (var update in agent.RunStreamingAsync(messages))
-    // transmitir a la UI vía HTTP NDJSON
+    // stream a UI vía HTTP NDJSON
 </code></pre>
 <!-- .element: class="fragment" -->
-<aside class="notes"><p>Agent Framework provee el bucle de ejecución. Conectamos nuestro adaptador IAgentProvider y AgentSkillsProvider. El agente maneja la inyección de habilidades, las llamadas a herramientas y el streaming — nosotros controlamos el modelo y las habilidades.</p>
+<aside class="notes"><p>Agent Framework proporciona el bucle de ejecución. Conectamos nuestro adaptador IAgentProvider y AgentSkillsProvider. El agente maneja inyección de skills, llamadas a tools y streaming — nosotros poseemos el modelo y los skills.</p>
 </aside>
 </section>
 <section class="section-divider">
@@ -1331,8 +1325,8 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </thead>
 <tbody><tr>
 <td><strong>Instalación</strong></td>
-<td>CLI + descarga de modelos</td>
-<td>Paquete NuGet (sin configuración)</td>
+<td>CLI + pull de modelos</td>
+<td>Paquete NuGet (configuración cero)</td>
 </tr>
 <tr>
 <td><strong>API</strong></td>
@@ -1347,7 +1341,7 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 <tr>
 <td><strong>Aceleración HW</strong></td>
 <td>Config GPU manual</td>
-<td>GPU / NPU / CPU automático</td>
+<td>Auto GPU / NPU / CPU</td>
 </tr>
 <tr>
 <td><strong>Privacidad</strong></td>
@@ -1357,11 +1351,11 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </tbody></table>
 <p>Ambos implementan <code>IAgentProvider</code> → <strong>intercambia con una línea</strong> <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Ollama es el favorito de la comunidad. Foundry Local se distribuye como NuGet — detecta hardware automáticamente. Cero configuración del usuario.</p>
+<aside class="notes"><p>Ollama es el favorito de la comunidad. Foundry Local se envía como NuGet — auto-detecta hardware. Configuración cero para el usuario.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>Archivos de Arranque del Workspace</h2>
+<h2>Archivos Bootstrap de Workspace</h2>
 <p>El comportamiento del agente vive en <strong>archivos markdown</strong>, no en código:</p>
 <table>
 <thead>
@@ -1376,20 +1370,20 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </tr>
 <tr>
 <td><code>SOUL.md</code></td>
-<td>Valores del agente, principios, salvaguardas éticas</td>
+<td>Valores del agente, principios, barandas éticas</td>
 </tr>
 <tr>
 <td><code>USER.md</code></td>
-<td>Perfil del usuario, preferencias, personalización</td>
+<td>Perfil de usuario, preferencias, personalización</td>
 </tr>
 </tbody></table>
-<p>Cargado por <code>WorkspaceLoader</code> al inicio de la sesión → inyectado en el system prompt <!-- .element: class="fragment" --></p>
-<pre><code class="language-json">// WorkspaceLoader reads from the session workspace directory
-// Precedence: workspace/ &gt; local/ &gt; bundle defaults
+<p>Cargados por <code>WorkspaceLoader</code> al inicio de sesión → inyectados en el system prompt <!-- .element: class="fragment" --></p>
+<pre><code class="language-json">// WorkspaceLoader lee del directorio de workspace de sesión
+// Precedencia: workspace/ &gt; local/ &gt; defaults del bundle
 {
-  &quot;agentsMarkdown&quot;: &quot;You are a helpful .NET assistant...&quot;,
-  &quot;soulMarkdown&quot;: &quot;Always be honest. Never harm users...&quot;,
-  &quot;userMarkdown&quot;: &quot;User prefers concise answers. Timezone: UTC-3...&quot;
+  &quot;agentsMarkdown&quot;: &quot;Eres un asistente .NET útil...&quot;,
+  &quot;soulMarkdown&quot;: &quot;Siempre sé honesto. Nunca dañes a usuarios...&quot;,
+  &quot;userMarkdown&quot;: &quot;El usuario prefiere respuestas concisas. Zona horaria: UTC-3...&quot;
 }
 </code></pre>
 
@@ -1399,27 +1393,27 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 <section class="architecture-slide">
 <h2><code>IAsyncEnumerable</code>: El Pipeline de Streaming</h2>
 <pre><code>┌─────────────────┐
-│  Proveedor LLM  │  Ollama / Azure AOAI / Foundry / Local / Copilot
-│  (generates)    │
+│  LLM Provider   │  Ollama / Azure AOAI / Foundry / Local / Copilot
+│  (genera)       │
 └────────┬────────┘
          ▼ IAsyncEnumerable&lt;ChatResponseChunk&gt;
 ┌─────────────────┐
-│ IAgentProvider  │  StreamAsync → yield return per token
-│  (abstracts)    │
+│ IAgentProvider  │  CreateChatClient → IChatClient por perfil
+│  (abstrae)      │
 └────────┬────────┘
          ▼ IAsyncEnumerable&lt;AgentStreamEvent&gt;
 ┌─────────────────┐
-│  IAgentOrch.    │  Tool loop + prompt composition
-│  (orchestrates) │
+│  IAgentOrch.    │  Bucle de tools + composición de prompt
+│  (orquesta)     │
 └────────┬────────┘
-         ▼ NDJSON HTTP stream
+         ▼ stream HTTP NDJSON
 ┌─────────────────┐
-│  Blazor UI      │  Token-by-token rendering
-│  (renders)      │
+│  Blazor UI      │  Renderizado token por token
+│  (renderiza)    │
 └─────────────────┘
 </code></pre>
 
-<aside class="notes"><p>Cada capa usa IAsyncEnumerable. Sin búfer en ningún lugar. Los tokens fluyen de arriba a abajo en tiempo real.</p>
+<aside class="notes"><p>Cada capa usa IAsyncEnumerable. Sin buffering en ningún lugar. Los tokens fluyen de arriba a abajo en tiempo real.</p>
 </aside>
 </section>
 <section class="content-slide">
@@ -1433,11 +1427,11 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </thead>
 <tbody><tr>
 <td><code>ChatSession</code></td>
-<td>Raíz — título, proveedor, modelo, marcas de tiempo</td>
+<td>Raíz — título, proveedor, modelo, timestamps</td>
 </tr>
 <tr>
 <td><code>ChatMessageEntity</code></td>
-<td>Rol, contenido, llamadas a herramientas, índice de orden</td>
+<td>Rol, contenido, llamadas a tools, índice de orden</td>
 </tr>
 <tr>
 <td><code>SessionSummary</code></td>
@@ -1445,15 +1439,15 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </tr>
 <tr>
 <td><code>ToolCallRecord</code></td>
-<td>Registro de auditoría de ejecución de herramientas</td>
+<td>Pista de auditoría de ejecución de tools</td>
 </tr>
 <tr>
 <td><code>ScheduledJob</code></td>
-<td>Definición de tarea cron (nombre, expresión cron)</td>
+<td>Definición de job cron (nombre, expresión cron)</td>
 </tr>
 <tr>
 <td><code>JobRun</code></td>
-<td>Historial y resultados de ejecución de tareas</td>
+<td>Historial de ejecución y resultados de jobs</td>
 </tr>
 <tr>
 <td><code>ProviderSetting</code></td>
@@ -1461,47 +1455,47 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 </tr>
 </tbody></table>
 
-<aside class="notes"><p>7 entidades. Cada una justifica su lugar. SessionSummary es cómo manejamos conversaciones largas sin agotar las ventanas de contexto.</p>
+<aside class="notes"><p>7 entidades. Cada una se gana su lugar. SessionSummary es cómo manejamos conversaciones largas sin explotar las ventanas de contexto.</p>
 </aside>
 </section>
 <section class="demo-transition">
 <h2>🎬 Demo en Vivo 3: Cambio de Personalidad del Agente</h2>
-<p><strong>Qué haremos:</strong> Cambiar el comportamiento del agente editando archivos de workspace — sin código</p>
-<p><strong>Cómo:</strong> Editar <code>AGENTS.md</code> → guardar → iniciar nuevo chat → ver el cambio de personalidad</p>
+<p><strong>Lo que haremos:</strong> Cambiar el comportamiento del agente editando archivos de workspace — sin código</p>
+<p><strong>Cómo:</strong> Editar <code>AGENTS.md</code> → guardar → iniciar nuevo chat → observar el cambio de personalidad</p>
 <p><strong>Punto de enseñanza:</strong> Los archivos de workspace (<code>AGENTS.md</code>, <code>SOUL.md</code>, <code>USER.md</code>) controlan el comportamiento del agente sin tocar C# ni reiniciar servicios</p>
-<p><strong>Personalización de comportamiento impulsada por Markdown</strong></p>
+<p><strong>Personalización de comportamiento dirigida por Markdown</strong></p>
 
-<aside class="notes"><p>La arquitectura workspace-first significa que el comportamiento cambia sin tocar el código. Esto es personalización de agente sin código.</p>
+<aside class="notes"><p>La arquitectura workspace-first significa cambios de comportamiento sin tocar código. Esta es personalización de agentes sin código.</p>
 </aside>
 </section>
 <section class="section-divider">
 <h1>Etapa 3</h1>
-<h2>Gateway + HTTP SSE + Blazor</h2>
+<h2>Gateway + HTTP NDJSON + Blazor</h2>
 <p>⏱️ 15 minutos</p>
 
-<aside class="notes"><p>Todas las piezas se conectan para el chat en tiempo real.</p>
+<aside class="notes"><p>Todas las piezas se conectan para chat en tiempo real.</p>
 </aside>
 </section>
 <section class="content-slide">
 <h2>Gateway: El Plano de Control</h2>
 <ul>
-<li>🔌 Gestiona conexiones persistentes de canales (Teams, futuros adaptadores) <!-- .element: class="fragment" --></li>
+<li>🔌 Gestiona conexiones de canal persistentes (Teams, adaptadores futuros) <!-- .element: class="fragment" --></li>
 <li>🌐 Expone APIs REST para todas las operaciones de gestión <!-- .element: class="fragment" --></li>
-<li>⚡ Expone endpoint HTTP SSE para streaming de tokens en tiempo real <!-- .element: class="fragment" --></li>
+<li>⚡ Expone endpoint HTTP NDJSON para streaming de tokens en tiempo real <!-- .element: class="fragment" --></li>
 <li>🖥️ Sirve Control UI + WebChat (ambas desde una app Blazor) <!-- .element: class="fragment" --></li>
-<li>🔗 Maneja endpoints webhook para triggers de eventos externos <!-- .element: class="fragment" --></li>
-<li>⏰ Ejecuta el planificador cron persistente para tareas automatizadas <!-- .element: class="fragment" --></li>
-<li>🔥 Dispara eventos del sistema (tarea iniciada, mensaje recibido, sesión creada) <!-- .element: class="fragment" --></li>
+<li>🔗 Maneja endpoints de webhook para triggers de eventos externos <!-- .element: class="fragment" --></li>
+<li>⏰ Ejecuta scheduler cron persistente para jobs automatizados <!-- .element: class="fragment" --></li>
+<li>🔥 Dispara eventos de sistema (job iniciado, mensaje recibido, sesión creada) <!-- .element: class="fragment" --></li>
 </ul>
 <blockquote>
-<p>&quot;Todo pasa por el Gateway. Es el centro neurálgico del sistema.&quot; <!-- .element: class="fragment" --></p>
+<p>&quot;Todo pasa a través del Gateway. Es el centro nervioso del sistema.&quot; <!-- .element: class="fragment" --></p>
 </blockquote>
 
-<aside class="notes"><p>NO es un proxy sin estado. Es un proceso persistente y con estado que gestiona conexiones de canales, estado de tareas y enrutamiento de eventos.</p>
+<aside class="notes"><p>NO es un proxy sin estado. Un proceso persistente con estado que posee conexiones de canal, estado de jobs y enrutamiento de eventos.</p>
 </aside>
 </section>
 <section class="code-slide">
-<h2><code>ChatStreamEndpoints</code> — Tokens al Navegador</h2>
+<h2><code>ChatStreamEndpoints</code> — Tokens al Browser</h2>
 <pre><code class="language-csharp">app.MapPost(&quot;/api/chat/stream&quot;, async (
     ChatStreamRequest request,
     IAgentOrchestrator orchestrator,
@@ -1534,12 +1528,12 @@ await foreach (var update in agent.RunStreamingAsync(messages))
 });
 </code></pre>
 
-<aside class="notes"><p>Endpoint de Minimal API. Devuelve NDJSON — cada línea es un evento JSON discreto. Los errores se muestran como códigos de estado HTTP. Más simple y depurable que WebSocket.</p>
+<aside class="notes"><p>Endpoint de Minimal API. Devuelve NDJSON — cada línea es un evento JSON discreto. Los errores surgen como códigos de estado HTTP. Más simple y debuggeable que WebSocket.</p>
 </aside>
 </section>
 <section class="code-slide">
 <h2>Aspire: 18 Líneas Reemplazan Docker Compose</h2>
-<pre><code class="language-csharp">// AppHost.cs — the entire topology
+<pre><code class="language-csharp">// AppHost.cs — toda la topología
 var gateway = builder.AddProject&lt;Projects.OpenClawNet_Gateway&gt;(&quot;gateway&quot;)
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck(&quot;/health&quot;)
@@ -1549,67 +1543,67 @@ var gateway = builder.AddProject&lt;Projects.OpenClawNet_Gateway&gt;(&quot;gatew
 builder.AddProject&lt;Projects.OpenClawNet_Web&gt;(&quot;web&quot;)
     .WithExternalHttpEndpoints()
     .WithReference(gateway)    // ← Service discovery
-    .WaitFor(gateway)          // ← Startup ordering
+    .WaitFor(gateway)          // ← Orden de arranque
     .WithEnvironment(&quot;OpenClawNet__GatewayUrl&quot;, gatewayUrl);
 
 builder.Build().Run();
 </code></pre>
 <p><small>Reemplaza Docker Compose + scripts de inicio · <a href="https://aspire.dev">aspire.dev</a></small></p>
 
-<aside class="notes"><p>WithReference = inyección automática de URL del servicio. WaitFor = Gateway debe estar sano antes de que Web inicie. Un comando: aspire run.</p>
+<aside class="notes"><p>WithReference = inyección automática de URL de servicio. WaitFor = Gateway debe estar saludable antes de que Web inicie. Un comando: aspire run.</p>
 </aside>
 </section>
 <section class="demo-transition">
 <h2>🎬 Demo en Vivo 2: Copilot CLI + Aspire</h2>
-<p><strong>Qué haremos:</strong> Depuración asistida por IA con datos de observabilidad reales</p>
-<p><strong>Cómo:</strong> Navegar a función rota → Panel de Aspire muestra error → Copilot CLI lee traces y sugiere corrección</p>
-<p><strong>Punto de enseñanza:</strong> Aspire proporciona la señal de error; Copilot CLI la lee y propone la solución</p>
-<p><strong>Observabilidad + IA = depuración más rápida</strong></p>
+<p><strong>Lo que haremos:</strong> Debugging asistido por IA con datos de observabilidad reales</p>
+<p><strong>Cómo:</strong> Navegar a feature roto → Dashboard de Aspire muestra error → Copilot CLI lee trazas y sugiere fix</p>
+<p><strong>Punto de enseñanza:</strong> Aspire provee la señal de error; Copilot CLI la lee y propone la solución</p>
+<p><strong>Observabilidad + IA = debugging más rápido</strong></p>
 
-<aside class="notes"><p>Depuración asistida por IA. El panel de Aspire proporciona telemetría; Copilot CLI la analiza y genera correcciones.</p>
+<aside class="notes"><p>Debugging asistido por IA. El dashboard de Aspire provee telemetría; Copilot CLI la analiza y genera fixes.</p>
 </aside>
 </section>
 <section class="demo-transition">
-<h2>Ejecutar el Stack Completo</h2>
+<h2>Ejecutar el Full Stack</h2>
 <pre><code class="language-bash">aspire run
 </code></pre>
 <ol>
-<li>Abrir Panel de Aspire → <code>https://localhost:15100</code></li>
-<li>Abrir UI de Blazor → <code>http://localhost:5001</code></li>
+<li>Abrir Dashboard de Aspire → <code>https://localhost:15100</code></li>
+<li>Abrir UI Blazor → <code>http://localhost:5001</code></li>
 <li>Crear una sesión → Enviar un mensaje</li>
-<li>¡Ver los tokens en streaming en tiempo real! 🚀</li>
-<li>DevTools → Network → ver respuesta streaming NDJSON</li>
+<li>¡Observa tokens en streaming en tiempo real! 🚀</li>
+<li>DevTools → Network → ver respuesta NDJSON streaming</li>
 </ol>
 
-<aside class="notes"><p>Todo lo que explicamos — interfaz, streaming, workspace, almacenamiento, HTTP streaming — todo en vivo.</p>
+<aside class="notes"><p>Todo lo que explicamos — interfaz, streaming, workspace, almacenamiento, streaming HTTP — todo en vivo.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>Qué Construimos ✓ + Vista Previa Sesión 2</h2>
+<h2>Lo Que Construimos ✓ + Vista Previa Sesión 2</h2>
 <div class="two-col">
 <div>
 
 <ul>
 <li>✅ 9 pilares de OpenClaw mapeados a .NET <!-- .element: class="fragment" --></li>
-<li>✅ <code>IAgentProvider</code> — 5 proveedores intercambiables (basado en MAF) <!-- .element: class="fragment" --></li>
-<li>✅ Archivos bootstrap del workspace — personalización de comportamiento sin código <!-- .element: class="fragment" --></li>
-<li>✅ Streaming LLM local — <code>IAsyncEnumerable</code> → tokens en tiempo real <!-- .element: class="fragment" --></li>
+<li>✅ <code>IAgentProvider</code> — 6 proveedores conectables (basados en MAF) <!-- .element: class="fragment" --></li>
+<li>✅ Archivos bootstrap de workspace — personalización de comportamiento sin código <!-- .element: class="fragment" --></li>
+<li>✅ Streaming de LLM local — <code>IAsyncEnumerable</code> → tokens en tiempo real <!-- .element: class="fragment" --></li>
 <li>✅ Almacenamiento EF Core — 7 entidades <!-- .element: class="fragment" --></li>
-<li>✅ HTTP SSE streaming — tokens NDJSON al navegador <!-- .element: class="fragment" --></li>
-<li>✅ Orquestación con Aspire — un comando, stack completo <!-- .element: class="fragment" --></li>
+<li>✅ Streaming HTTP NDJSON — tokens NDJSON al browser <!-- .element: class="fragment" --></li>
+<li>✅ Orquestación Aspire — un comando, full stack <!-- .element: class="fragment" --></li>
 </ul>
 </div>
 <div>
 
-<p><strong>Próximo: dale superpoderes al chatbot</strong></p>
+<p><strong>Siguiente: darle superpoderes al chatbot</strong></p>
 <ul>
-<li>🔧 Framework de herramientas: <code>ITool</code>, <code>IToolRegistry</code>, <code>IToolExecutor</code> <!-- .element: class="fragment" --></li>
-<li>📂 Herramientas integradas: FileSystem, Shell, Web, Scheduler <!-- .element: class="fragment" --></li>
+<li>🔧 Framework de tools: <code>ITool</code>, <code>IToolRegistry</code>, <code>IToolExecutor</code> <!-- .element: class="fragment" --></li>
+<li>📂 Tools integrados: FileSystem, Shell, Web, Scheduler <!-- .element: class="fragment" --></li>
 <li>🔄 El bucle del agente: pensar → actuar → observar → repetir <!-- .element: class="fragment" --></li>
 </ul>
 </div>
 </div>
-<aside class="notes"><p>Base sólida. En la Sesión 2, el agente aprende a HACER cosas en el mundo real.</p>
+<aside class="notes"><p>Fundamento sólido. En la Sesión 2, el agente aprende a HACER cosas en el mundo real.</p>
 </aside>
 </section>
 <section class="content-slide">
@@ -1618,11 +1612,11 @@ builder.Build().Run();
 <thead>
 <tr>
 <th>Recurso</th>
-<th>Enlace</th>
+<th>Link</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>📦 Repositorio GitHub</td>
+<td>📦 GitHub Repo</td>
 <td><a href="https://github.com/elbruno/openclawnet">github.com/elbruno/openclawnet</a></td>
 </tr>
 <tr>
@@ -1642,7 +1636,7 @@ builder.Build().Run();
 <td><a href="https://ollama.com">ollama.com</a></td>
 </tr>
 <tr>
-<td>📡 HTTP SSE</td>
+<td>📡 HTTP NDJSON</td>
 <td><a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events">developer.mozilla.org/en-US/docs/Web/API/Server-sent_events</a></td>
 </tr>
 <tr>
@@ -1665,9 +1659,9 @@ builder.Build().Run();
 <div class="series-info">
 
 <p>📦 <a href="https://github.com/elbruno/openclawnet">github.com/elbruno/openclawnet</a></p>
-<p><strong>Próxima sesión:</strong> Herramientas y Flujos de Trabajo de Agentes</p>
+<p><strong>Próxima sesión:</strong> Tools &amp; Flujos de Agentes</p>
 </div>
-<aside class="notes"><p>Todos los enlaces en el README de la sesión. Dale una estrella al repositorio y descarga el código para la Sesión 2.</p>
+<aside class="notes"><p>Todos los links en el README de la sesión. Dale star al repo y descarga el código para la Sesión 2.</p>
 </aside>
 </section>
         </div>

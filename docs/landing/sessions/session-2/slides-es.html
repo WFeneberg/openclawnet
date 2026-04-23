@@ -901,8 +901,8 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
         <div class="slides">
 <section class="title-slide">
 <h1>🦞 Sesión 2</h1>
-<h2>Herramientas + Flujos de Agente</h2>
-<h3>OpenClawNet — Construye una Plataforma de Agentes IA con .NET 10</h3>
+<h2>Tools + Flujos de Agentes</h2>
+<h3>OpenClawNet — Construye una Plataforma de Agentes AI con .NET 10</h3>
 <div class="presenter-info">
 
 <p><strong>Bruno Capuano</strong> · <strong>Pablo Piovano</strong> · Microsoft Reactor</p>
@@ -911,11 +911,11 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 </aside>
 </section>
 <section class="content-slide">
-<h2>🔄 Resumen de la Sesión 1</h2>
+<h2>🔄 Recapitulación de la Sesión 1</h2>
 <table>
 <thead>
 <tr>
-<th>Qué Construimos</th>
+<th>Lo que Construimos</th>
 <th>Estado</th>
 </tr>
 </thead>
@@ -928,21 +928,21 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <td>✅</td>
 </tr>
 <tr>
-<td>Gateway API + SignalR ChatHub</td>
+<td>Gateway API + streaming HTTP SSE</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>Interfaz Blazor con streaming</td>
+<td>Blazor UI con streaming</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>Orquestación con Aspire</td>
+<td>Orquestación Aspire</td>
 <td>✅</td>
 </tr>
 </tbody></table>
 <p><strong>Resultado:</strong> Un chatbot funcional que habla pero no puede <em>hacer</em> nada</p>
 
-<aside class="notes"><p>Breve resumen de la Sesión 1. Tenemos un chatbot. Responde preguntas, hace streaming de respuestas, almacena el historial. Pero está limitado a generar texto.</p>
+<aside class="notes"><p>Recapitulación rápida de la Sesión 1. Tenemos un chatbot. Responde preguntas, transmite respuestas, almacena historial. Pero está limitado a generar texto.</p>
 </aside>
 </section>
 <section class="content-slide">
@@ -952,17 +952,17 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 </blockquote>
 <p>Un chatbot genera texto. <!-- .element: class="fragment" --></p>
 <p>Un agente <strong>usa herramientas</strong> para interactuar con el mundo. <!-- .element: class="fragment" --></p>
-<p>¿La diferencia? Una sola palabra: <strong>herramientas</strong>. <!-- .element: class="fragment" --></p>
+<p>¿La diferencia? Una palabra: <strong>tools</strong>. <!-- .element: class="fragment" --></p>
 
 <aside class="notes"><p>El concepto más importante de hoy. Un chatbot solo puede hablar. Un agente puede actuar. El puente entre ellos es la llamada a herramientas.</p>
 </aside>
 </section>
 <section class="section-divider">
 <h1>Etapa 1</h1>
-<h2>Arquitectura de Herramientas</h2>
+<h2>Arquitectura de Tools</h2>
 <p>🔧 12 minutos</p>
 
-<aside class="notes"><p>Empecemos con la capa de abstracción de herramientas — cómo las definimos, registramos y ejecutamos.</p>
+<aside class="notes"><p>Comencemos con la capa de abstracción de herramientas — cómo definimos, registramos y ejecutamos tools.</p>
 </aside>
 </section>
 <section class="two-column">
@@ -987,26 +987,26 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 <td><strong>Solicita llamadas a herramientas</strong></td>
 </tr>
 <tr>
-<td>Listo</td>
-<td>Ejecuta herramientas → itera</td>
+<td>Terminado</td>
+<td>Ejecuta herramientas → ciclo</td>
 </tr>
 </tbody></table>
 <p>El modelo no ejecuta nada — emite una solicitud estructurada <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Distinción clave. El modelo dice &quot;quiero llamar a file_system con action=list&quot;. Nuestro código decide si permitirlo, lo ejecuta y devuelve el resultado. El modelo nunca toca el sistema de archivos directamente.</p>
+<aside class="notes"><p>Distinción clave. El modelo dice &quot;Quiero llamar a file_system con action=list&quot;. Nuestro código decide si permitirlo, lo ejecuta y devuelve el resultado. El modelo nunca toca el sistema de archivos directamente.</p>
 </aside>
 </section>
 <section class="architecture-slide">
-<h2>Framework de Herramientas</h2>
+<h2>Framework de Tools</h2>
 <pre><code>┌─────────────────────────────────────────────┐
-│              Agent Orchestrator              │
+│          Orquestador de Agentes              │
 ├─────────────────────────────────────────────┤
-│    IToolExecutor (approval + execution)     │
+│    IToolExecutor (aprobación + ejecución)   │
 ├──────────┬──────────┬──────────┬────────────┤
 │ 📁 File  │ 💻 Shell │ 🌐 Web  │ ⏰ Sched  │
 │ System   │ Tool     │ Tool    │ Tool       │
 ├──────────┴──────────┴──────────┴────────────┤
-│         IToolRegistry (discovery)           │
+│      IToolRegistry (descubrimiento)         │
 ├─────────────────────────────────────────────┤
 │    ITool + ToolMetadata + ToolResult        │
 └─────────────────────────────────────────────┘
@@ -1029,13 +1029,13 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 }
 </code></pre>
 <ul>
-<li><code>Name</code> — cómo lo llama el modelo <!-- .element: class="fragment" --></li>
-<li><code>Description</code> — cuándo usarlo (¡ingeniería de prompts!) <!-- .element: class="fragment" --></li>
-<li><code>Metadata</code> — esquema JSON para parámetros <!-- .element: class="fragment" --></li>
-<li><code>ExecuteAsync</code> → <code>ToolResult</code> (¡no un string!) <!-- .element: class="fragment" --></li>
+<li><code>Name</code> — cómo el modelo la llama <!-- .element: class="fragment" --></li>
+<li><code>Description</code> — cuándo usarla (¡ingeniería de prompts!) <!-- .element: class="fragment" --></li>
+<li><code>Metadata</code> — JSON Schema para parámetros <!-- .element: class="fragment" --></li>
+<li><code>ExecuteAsync</code> → <code>ToolResult</code> (¡no es un string!) <!-- .element: class="fragment" --></li>
 </ul>
 
-<aside class="notes"><p>Cuatro miembros. Name identifica la herramienta. Description le dice al modelo cuándo usarla — esto es ingeniería de prompts integrada en tu arquitectura. Metadata incluye el esquema JSON. ExecuteAsync devuelve un ToolResult estructurado con Success, Output, Error y Duration.</p>
+<aside class="notes"><p>Cuatro miembros. Name identifica la herramienta. Description le dice al modelo cuándo usarla — esto es ingeniería de prompts integrada en tu arquitectura. Metadata incluye el JSON Schema. ExecuteAsync devuelve un ToolResult estructurado con Success, Output, Error y Duration.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1055,7 +1055,7 @@ public sealed class AlwaysApprovePolicy : IToolApprovalPolicy
 </code></pre>
 <p>ShellTool establece <code>RequiresApproval = true</code> <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>La interfaz de seguridad. Dos preguntas: ¿esta herramienta requiere aprobación, y ha sido aprobada? El valor por defecto es aprobar todo automáticamente. Pero ShellTool opta por requerir aprobación — en producción mostrarías un diálogo de confirmación.</p>
+<aside class="notes"><p>La interfaz de puerta de seguridad. Dos preguntas: ¿esta herramienta requiere aprobación?, ¿ha sido aprobada? Por defecto es auto-aprobar todo. Pero ShellTool opta por aprobación — en producción mostrarías un diálogo de confirmación.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1081,7 +1081,7 @@ public sealed class AlwaysApprovePolicy : IToolApprovalPolicy
 }
 </code></pre>
 
-<aside class="notes"><p>Toda llamada a herramienta pasa por aquí. Búsqueda, aprobación, ejecución, registro. Este patrón de punto de control significa que agregamos métricas una vez, registro una vez, aprobación una vez — se aplica a TODAS las herramientas.</p>
+<aside class="notes"><p>Toda llamada a herramienta fluye por aquí. Búsqueda, aprobación, ejecución, registro. Este patrón de punto de control significa que agregamos métricas una vez, logging una vez, aprobación una vez — se aplica a TODAS las herramientas.</p>
 </aside>
 </section>
 <section class="demo-transition">
@@ -1089,12 +1089,12 @@ public sealed class AlwaysApprovePolicy : IToolApprovalPolicy
 <h3><code>GET /api/tools</code></h3>
 <p>Mostrar el manifiesto de herramientas — lo que ve el modelo</p>
 
-<aside class="notes"><p>Hora del demo. Mostrar el endpoint /api/tools. La respuesta JSON lista cada herramienta con nombre, descripción y esquema de parámetros. Esto es lo que usa el LLM para decidir qué herramienta llamar.</p>
+<aside class="notes"><p>Hora del demo. Mostrar el endpoint /api/tools. La respuesta JSON lista cada herramienta con nombre, descripción y esquema de parámetros. Esto es lo que el LLM usa para decidir qué herramienta llamar.</p>
 </aside>
 </section>
 <section class="section-divider">
 <h1>Etapa 2</h1>
-<h2>Herramientas Integradas + Seguridad</h2>
+<h2>Tools Integradas + Seguridad</h2>
 <p>🛡️ 15 minutos</p>
 
 <aside class="notes"><p>Ahora veamos las cuatro herramientas integradas y las amenazas de seguridad contra las que cada una se defiende.</p>
@@ -1113,23 +1113,23 @@ public sealed class AlwaysApprovePolicy : IToolApprovalPolicy
 <tbody><tr>
 <td>🗂️ <strong>Path Traversal</strong></td>
 <td><code>../../etc/passwd</code></td>
-<td>Expone todo el sistema de archivos</td>
+<td>Exponer todo el sistema de archivos</td>
 </tr>
 <tr>
-<td>💻 <strong>Inyección de Comandos</strong></td>
+<td>💻 <strong>Command Injection</strong></td>
 <td><code>rm -rf /</code></td>
-<td>Destruye el servidor</td>
+<td>Destruir el servidor</td>
 </tr>
 <tr>
 <td>🌐 <strong>SSRF</strong></td>
 <td><code>http://169.254.169.254/</code></td>
-<td>Filtra credenciales de nube</td>
+<td>Filtrar credenciales de la nube</td>
 </tr>
 </tbody></table>
-<p>Cada herramienta valida las entradas <strong>antes</strong> de la ejecución <!-- .element: class="fragment" --></p>
-<p>Fallar rápido. Fallar de forma segura. <!-- .element: class="fragment" --></p>
+<p>Cada herramienta valida entradas <strong>antes</strong> de la ejecución <!-- .element: class="fragment" --></p>
+<p>Falla rápido. Falla seguro. <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Tres amenazas reales. El path traversal escapa del workspace. La inyección de comandos ejecuta comandos destructivos. El SSRF accede a redes internas. Cada herramienta tiene defensas específicas. El patrón es siempre el mismo: validar antes de ejecutar.</p>
+<aside class="notes"><p>Tres amenazas reales. Path traversal escapa del espacio de trabajo. Command injection ejecuta comandos destructivos. SSRF accede a redes internas. Cada herramienta tiene defensas específicas. El patrón es siempre el mismo: validar antes de ejecutar.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1158,11 +1158,11 @@ private string? ResolvePath(string relativePath)
 }
 </code></pre>
 
-<aside class="notes"><p>Dos defensas. Primero, una lista negra para archivos sensibles. Segundo, Path.GetFullPath resuelve todos los segmentos punto-punto, luego verificamos si el resultado todavía comienza con nuestra raíz de workspace. Si alguien intenta ../../etc/passwd, GetFullPath lo resuelve, y no comenzará con el workspace. Bloqueado.</p>
+<aside class="notes"><p>Dos defensas. Primero, una lista de bloqueo para archivos sensibles. Segundo, Path.GetFullPath resuelve todos los segmentos punto-punto, luego verificamos si el resultado aún comienza con la raíz de nuestro espacio de trabajo. Si alguien intenta ../../etc/passwd, GetFullPath lo resuelve y no comenzará con el workspace. Bloqueado.</p>
 </aside>
 </section>
 <section class="code-slide">
-<h2>ShellTool — Lista Negra de Comandos</h2>
+<h2>ShellTool — Lista de Bloqueo de Comandos</h2>
 <pre><code class="language-csharp">private static readonly HashSet&lt;string&gt; BlockedCommands = 
     new(StringComparer.OrdinalIgnoreCase)
 {
@@ -1181,10 +1181,10 @@ private static bool IsSafeCommand(string command)
 }
 </code></pre>
 <ul>
-<li>tiempo límite de 30s · límite de 10K caracteres de salida · <code>RequiresApproval = true</code> <!-- .element: class="fragment" --></li>
+<li>timeout de 30s · límite de salida de 10K caracteres · <code>RequiresApproval = true</code> <!-- .element: class="fragment" --></li>
 </ul>
 
-<aside class="notes"><p>14 comandos bloqueados. Extrae la primera palabra, quita el prefijo de ruta, verifica la lista negra. Más un tiempo límite de 30 segundos con eliminación del árbol de procesos, límite de 10K caracteres de salida, y aprobación requerida. Defensa en profundidad.</p>
+<aside class="notes"><p>14 comandos bloqueados. Extraer primera palabra, quitar prefijo de ruta, verificar lista de bloqueo. Además un timeout de 30 segundos con muerte del árbol de procesos, límite de 10K caracteres de salida, y aprobación requerida. Defensa en profundidad.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1200,9 +1200,9 @@ private static bool IsSafeCommand(string command)
            host.StartsWith(&quot;172.16.&quot;);
 }
 </code></pre>
-<p>También: solo HTTP/HTTPS · límite de 50K caracteres · tiempo límite de 15s <!-- .element: class="fragment" --></p>
+<p>También: solo HTTP/HTTPS · límite de 50K caracteres · timeout de 15s <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Bloquea todas las direcciones privadas y locales. Sin localhost, sin 127.0.0.1, sin rangos privados. Solo esquemas HTTP y HTTPS — sin file://, sin ftp://. En producción también resolverías DNS para detectar trucos con CNAME.</p>
+<aside class="notes"><p>Bloquear todas las direcciones privadas y locales. No localhost, no 127.0.0.1, no rangos privados. Solo esquemas HTTP y HTTPS — no file://, no ftp://. En producción también resolverías DNS para detectar trucos de CNAME.</p>
 </aside>
 </section>
 <section class="two-column">
@@ -1215,29 +1215,29 @@ private static bool IsSafeCommand(string command)
 </tr>
 </thead>
 <tbody><tr>
-<td>&quot;Leer <code>../../etc/passwd</code>&quot;</td>
-<td>❌ Ruta fuera del workspace</td>
+<td>&quot;Lee <code>../../etc/passwd</code>&quot;</td>
+<td>❌ Ruta fuera del espacio de trabajo</td>
 </tr>
 <tr>
-<td>&quot;Ejecutar <code>rm -rf /</code>&quot;</td>
+<td>&quot;Ejecuta <code>rm -rf /</code>&quot;</td>
 <td>❌ Comando bloqueado por política</td>
 </tr>
 <tr>
-<td>&quot;Obtener <code>http://127.0.0.1:8080</code>&quot;</td>
+<td>&quot;Obtén <code>http://127.0.0.1:8080</code>&quot;</td>
 <td>❌ Dirección local bloqueada</td>
 </tr>
 <tr>
-<td>&quot;Leer archivo <code>.env</code>&quot;</td>
+<td>&quot;Lee archivo <code>.env</code>&quot;</td>
 <td>❌ Ruta bloqueada</td>
 </tr>
 <tr>
-<td>&quot;Ejecutar <code>shutdown</code>&quot;</td>
+<td>&quot;Ejecuta <code>shutdown</code>&quot;</td>
 <td>❌ Comando bloqueado por política</td>
 </tr>
 </tbody></table>
-<p>Todos los ataques detectados. Sin ejecución. <!-- .element: class="fragment" --></p>
+<p>Todos los ataques capturados. Sin ejecución. <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Cinco intentos de ataque, cinco rechazos. La acción peligrosa nunca se ejecuta. Así funciona el modelo de seguridad en la práctica.</p>
+<aside class="notes"><p>Cinco intentos de ataque, cinco rechazos. La acción peligrosa nunca se ejecuta. Este es el modelo de seguridad en acción.</p>
 </aside>
 </section>
 <section class="demo-transition">
@@ -1247,25 +1247,25 @@ private static bool IsSafeCommand(string command)
 <p>&quot;Agrega <code>wget</code> y <code>curl</code> a la lista de comandos bloqueados. Estos podrían usarse para exfiltrar datos.&quot;</p>
 </blockquote>
 
-<aside class="notes"><p>Primer momento Copilot. Extendemos la lista negra de ShellTool para incluir herramientas de red que podrían exfiltrar datos. Cambio pequeño, gran impacto en seguridad.</p>
+<aside class="notes"><p>Primer momento Copilot. Extendemos la lista de bloqueo de ShellTool para incluir herramientas de red que podrían exfiltrar datos. Pequeño cambio, gran impacto en seguridad.</p>
 </aside>
 </section>
 <section class="section-divider">
 <h1>Etapa 3</h1>
-<h2>Bucle de Agente + Integración</h2>
+<h2>Ciclo del Agente + Integración</h2>
 <p>🔄 15 minutos</p>
 
-<aside class="notes"><p>El framework de herramientas está listo. Ahora veamos cómo el orquestador de agente conecta todo con el bucle de razonamiento.</p>
+<aside class="notes"><p>El framework de herramientas está listo. Ahora veamos cómo el orquestador de agentes une todo con el ciclo de razonamiento.</p>
 </aside>
 </section>
 <section class="architecture-slide">
-<h2>El Bucle de Razonamiento del Agente</h2>
+<h2>El Ciclo de Razonamiento del Agente</h2>
 <pre><code>  ┌──────────────────┐
   │  Mensaje Usuario  │
   └────────┬─────────┘
            ▼
   ┌──────────────────┐
-  │ Componer Prompt   │ ◄── system + history + tools
+  │ Componer Prompt  │ ◄── system + history + tools
   └────────┬─────────┘
            ▼
   ┌──────────────────┐
@@ -1273,21 +1273,21 @@ private static bool IsSafeCommand(string command)
   └────────┬─────────┘
            ▼
      ┌─────────────┐
-     │ ¿Herramientas?│
+     │ ¿Tool calls? │
      └──┬───────┬───┘
-    SÍ  │       │ NO
+    YES │       │ NO
         ▼       ▼
   ┌──────────┐  ┌──────────────┐
-  │ Ejecutar │  │ Devolver resp│
-  │ herram.  │  │ final        │
-  └────┬─────┘  └──────────────┘
-       │
+  │ Ejecutar │  │ Devolver     │
+  │ tools    │  │ respuesta    │
+  └────┬─────┘  │ final        │
+       │        └──────────────┘
        └──────► volver a &quot;Llamar Modelo&quot;
 
-  Seguridad: máx. 10 iteraciones
+  Seguridad: máximo 10 iteraciones
 </code></pre>
 
-<aside class="notes"><p>El algoritmo central. Componer prompt, llamar al modelo, verificar si hay llamadas a herramientas. Si se solicitan herramientas, ejecutarlas y volver al bucle. Si no hay herramientas, tenemos la respuesta final. Máximo 10 iteraciones como válvula de seguridad.</p>
+<aside class="notes"><p>El algoritmo central. Componer prompt, llamar modelo, verificar llamadas a herramientas. Si se solicitan herramientas, ejecutarlas y volver al ciclo. Si no hay herramientas, tenemos la respuesta final. Máximo 10 iteraciones como válvula de seguridad.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1316,11 +1316,11 @@ private static bool IsSafeCommand(string command)
 }
 </code></pre>
 
-<aside class="notes"><p>El orquestador es la API pública. Crea el contexto y delega al runtime. Separación limpia — el orquestador no sabe nada sobre herramientas, modelos o prompts.</p>
+<aside class="notes"><p>El orquestador es la API pública. Crea el contexto, delega al runtime. Separación limpia — el orquestador no conoce herramientas, modelos ni prompts.</p>
 </aside>
 </section>
 <section class="code-slide">
-<h2>DefaultAgentRuntime — El Bucle</h2>
+<h2>DefaultAgentRuntime — El Ciclo</h2>
 <pre><code class="language-csharp">while (iterations &lt; MaxToolIterations)  // max = 10
 {
     var response = await InvokeHostedAgentAsync(
@@ -1352,7 +1352,7 @@ private static bool IsSafeCommand(string command)
 }
 </code></pre>
 
-<aside class="notes"><p>El corazón del agente. Bucle while con máximo de iteraciones. Si el modelo devuelve llamadas a herramientas, ejecuta cada una a través del ejecutor, agrega los resultados como mensajes Tool, y vuelve al bucle. Si el modelo devuelve solo texto, esa es la respuesta final.</p>
+<aside class="notes"><p>El corazón del agente. Ciclo while con máximo de iteraciones. Si el modelo devuelve llamadas a herramientas, ejecutar cada una a través del ejecutor, agregar resultados como mensajes Tool, volver al ciclo. Si el modelo devuelve solo texto, esa es la respuesta final.</p>
 </aside>
 </section>
 <section class="code-slide">
@@ -1381,52 +1381,52 @@ private static bool IsSafeCommand(string command)
     return messages;
 }
 </code></pre>
-<p>Las definiciones de herramientas se pasan por separado mediante la API del modelo <!-- .element: class="fragment" --></p>
+<p>Definiciones de herramientas pasadas por separado vía API del modelo <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Cuatro capas: prompt del sistema con skills, resumen de sesión, historial de conversación, mensaje actual. Importante: las definiciones de herramientas NO están en el prompt del sistema — son objetos estructurados que se pasan mediante la API del modelo.</p>
+<aside class="notes"><p>Cuatro capas: prompt de sistema con skills, resumen de sesión, historial de conversación, mensaje actual. Importante: las definiciones de herramientas NO están en el prompt de sistema — son objetos estructurados pasados vía la API del modelo.</p>
 </aside>
 </section>
 <section class="demo-transition">
 <h2>🖥️ Demo en Vivo</h2>
 <h3>El Agente Usa Herramientas</h3>
 <ol>
-<li>📁 &quot;Lista los archivos del directorio actual&quot; → FileSystem</li>
+<li>📁 &quot;Lista archivos en el directorio actual&quot; → FileSystem</li>
 <li>🌐 &quot;¿Qué hay en Hacker News?&quot; → Web fetch + resumir</li>
-<li>🚫 &quot;Ejecutar <code>rm -rf /</code>&quot; → ¡Bloqueado!</li>
+<li>🚫 &quot;Ejecuta <code>rm -rf /</code>&quot; → ¡Bloqueado!</li>
 </ol>
 
-<aside class="notes"><p>Tres demos mostrando el bucle del agente en acción. Listado de archivos, obtención web y un comando peligroso bloqueado. Observa las llamadas a herramientas fluir a través del ejecutor.</p>
+<aside class="notes"><p>Tres demos mostrando el ciclo del agente en acción. Listado de archivos, obtención web, y un comando peligroso bloqueado. Observa cómo las llamadas a herramientas fluyen a través del ejecutor.</p>
 </aside>
 </section>
 <section class="demo-transition">
 <h2>🤖 Momento Copilot #2</h2>
-<h3>Agregar estadísticas de ejecución al ToolExecutor</h3>
+<h3>Agregar estadísticas de ejecución a ToolExecutor</h3>
 <blockquote>
-<p>&quot;Agrega un método <code>GetExecutionStats()</code> que devuelva nombre de herramienta → duración promedio. Seguimiento en un <code>ConcurrentDictionary</code>.&quot;</p>
+<p>&quot;Agrega un método <code>GetExecutionStats()</code> que devuelva nombre de herramienta → duración promedio. Rastrea en un <code>ConcurrentDictionary</code>.&quot;</p>
 </blockquote>
 <p>El <strong>patrón de punto de control</strong> hace esto trivial <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Segundo momento Copilot. Debido a que todas las herramientas pasan por el ejecutor, agregamos métricas en un solo lugar y obtenemos estadísticas para todo. Demuestra el beneficio arquitectónico.</p>
+<aside class="notes"><p>Segundo momento Copilot. Porque todas las herramientas pasan por el ejecutor, agregamos métricas en un solo lugar y obtenemos estadísticas para todo. Muestra el beneficio arquitectónico.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>✅ Qué Construimos</h2>
+<h2>✅ Lo que Construimos</h2>
 <ul>
 <li>✅ Capa de abstracción de herramientas (ITool, IToolExecutor, IToolRegistry) <!-- .element: class="fragment" --></li>
 <li>✅ Puerta de política de aprobación (IToolApprovalPolicy) <!-- .element: class="fragment" --></li>
 <li>✅ FileSystemTool con prevención de path traversal <!-- .element: class="fragment" --></li>
-<li>✅ ShellTool con lista negra de comandos + tiempo límite <!-- .element: class="fragment" --></li>
+<li>✅ ShellTool con lista de bloqueo de comandos + timeout <!-- .element: class="fragment" --></li>
 <li>✅ WebTool con protección SSRF <!-- .element: class="fragment" --></li>
 <li>✅ SchedulerTool con CRUD de trabajos <!-- .element: class="fragment" --></li>
-<li>✅ Bucle de razonamiento del agente (prompt → modelo → herramienta → bucle) <!-- .element: class="fragment" --></li>
-<li>✅ Composición de prompts con inyección de herramientas <!-- .element: class="fragment" --></li>
+<li>✅ Ciclo de razonamiento del agente (prompt → modelo → tool → ciclo) <!-- .element: class="fragment" --></li>
+<li>✅ Composición de prompt con inyección de herramientas <!-- .element: class="fragment" --></li>
 </ul>
 
-<aside class="notes"><p>Ocho marcas de verificación. Un framework completo de herramientas, cuatro herramientas con seguridad, y el bucle del agente que lo conecta todo.</p>
+<aside class="notes"><p>Ocho marcas de verificación. Un framework completo de herramientas, cuatro herramientas con seguridad, y el ciclo del agente que une todo.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>🛡️ Resumen de Seguridad</h2>
+<h2>🛡️ Recapitulación de Seguridad</h2>
 <table>
 <thead>
 <tr>
@@ -1438,38 +1438,38 @@ private static bool IsSafeCommand(string command)
 <tbody><tr>
 <td>Path Traversal</td>
 <td>FileSystemTool</td>
-<td><code>Path.GetFullPath</code> + límite de workspace</td>
+<td><code>Path.GetFullPath</code> + límite de espacio de trabajo</td>
 </tr>
 <tr>
-<td>Inyección de Comandos</td>
+<td>Command Injection</td>
 <td>ShellTool</td>
-<td>HashSet de comandos bloqueados + tiempo límite</td>
+<td>HashSet de comandos bloqueados + timeout</td>
 </tr>
 <tr>
 <td>SSRF</td>
 <td>WebTool</td>
-<td>Lista negra de IPs privadas + verificación de esquema</td>
+<td>Lista de bloqueo de IPs privadas + verificación de esquema</td>
 </tr>
 </tbody></table>
 <p><strong>Patrón:</strong> Validar entradas <em>antes</em> de la ejecución <!-- .element: class="fragment" --></p>
-<p><strong>Principio:</strong> Fallar rápido. Fallar de forma segura. <!-- .element: class="fragment" --></p>
+<p><strong>Principio:</strong> Falla rápido. Falla seguro. <!-- .element: class="fragment" --></p>
 
-<aside class="notes"><p>Tres amenazas, tres defensas. El patrón es siempre el mismo: validar antes de ejecutar. Esto aplica a cualquier herramienta que construyas, no solo a estas cuatro.</p>
+<aside class="notes"><p>Tres amenazas, tres defensas. El patrón es siempre el mismo: validar antes de ejecutar. Esto se aplica a cualquier herramienta que construyas, no solo a estas cuatro.</p>
 </aside>
 </section>
 <section class="content-slide">
-<h2>🔮 Vista Previa de la Próxima Sesión</h2>
+<h2>🔮 Avance de la Próxima Sesión</h2>
 <h3>Sesión 3: Skills + Memoria</h3>
 <blockquote>
-<p>&quot;El agente ya tiene manos. Lo siguiente: darle personalidad y memoria.&quot;</p>
+<p>&quot;El agente ahora tiene manos. Siguiente: dale personalidad y memoria.&quot;</p>
 </blockquote>
 <ul>
-<li><strong>Skills</strong> — archivos YAML de personalidad que personalizan el comportamiento <!-- .element: class="fragment" --></li>
-<li><strong>Memoria</strong> — Resumen de conversaciones para contexto a largo plazo <!-- .element: class="fragment" --></li>
-<li><strong>Carga de Skills</strong> — Descubrimiento dinámico + inyección en prompt del sistema <!-- .element: class="fragment" --></li>
+<li><strong>Skills</strong> — Archivos YAML de personalidad que personalizan el comportamiento <!-- .element: class="fragment" --></li>
+<li><strong>Memoria</strong> — Resumen de conversación para contexto de largo plazo <!-- .element: class="fragment" --></li>
+<li><strong>Carga de skills</strong> — Descubrimiento dinámico + inyección en prompt de sistema <!-- .element: class="fragment" --></li>
 </ul>
 
-<aside class="notes"><p>Vista previa de la Sesión 3. El agente ya puede actuar en el mundo. A continuación le damos personalidad a través de skills y memoria mediante el resumen de conversaciones.</p>
+<aside class="notes"><p>Avance de la Sesión 3. El agente ahora puede actuar en el mundo. A continuación le damos personalidad a través de skills y memoria mediante resumen de conversación.</p>
 </aside>
 </section>
 <section class="content-slide">
@@ -1482,7 +1482,7 @@ private static bool IsSafeCommand(string command)
 </tr>
 </thead>
 <tbody><tr>
-<td>📦 Repositorio GitHub</td>
+<td>📦 GitHub Repo</td>
 <td><a href="https://github.com/elbruno/openclawnet">github.com/elbruno/openclawnet</a></td>
 </tr>
 <tr>
@@ -1512,14 +1512,14 @@ private static bool IsSafeCommand(string command)
 </section>
 <section class="closing-slide">
 <h1>¡Gracias! 💜</h1>
-<h2>OpenClawNet — Sesión 2 Completada</h2>
+<h2>OpenClawNet — Sesión 2 Completa</h2>
 <p><strong>Bruno Capuano</strong> — 🐦 <a href="https://x.com/elbruno">@elbruno</a> · 💼 <a href="https://www.linkedin.com/in/elbruno/">LinkedIn</a></p>
 <p><strong>Pablo Piovano</strong> — 💼 <a href="https://www.linkedin.com/in/ppiova/">LinkedIn</a></p>
 <p>📦 <a href="https://github.com/elbruno/openclawnet">github.com/elbruno/openclawnet</a></p>
-<p>⭐ Dale una estrella · 🍴 Haz un fork · 🔨 Rómpelo · 🔧 Arréglalo</p>
+<p>⭐ Dale estrella · 🍴 Haz fork · 🔨 Rómpelo · 🔧 Arréglalo</p>
 <p>¡Nos vemos en la <strong>Sesión 3</strong>!</p>
 
-<aside class="notes"><p>¡Gracias! Todo el código está en el repositorio. Nos vemos la próxima vez para Skills y Memoria.</p>
+<aside class="notes"><p>¡Gracias! Todo el código está en el repositorio. Nos vemos la próxima para Skills y Memoria.</p>
 </aside>
 </section>
         </div>

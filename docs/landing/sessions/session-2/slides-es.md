@@ -2,9 +2,9 @@
 
 # 🦞 Sesión 2
 
-## Herramientas + Flujos de Agente
+## Tools + Flujos de Agentes
 
-### OpenClawNet — Construye una Plataforma de Agentes IA con .NET 10
+### OpenClawNet — Construye una Plataforma de Agentes AI con .NET 10
 
 <div class="presenter-info">
 
@@ -19,20 +19,20 @@ Note:
 
 <!-- .slide: class="content-slide" -->
 
-## 🔄 Resumen de la Sesión 1
+## 🔄 Recapitulación de la Sesión 1
 
-| Qué Construimos | Estado |
-|----------------|--------|
+| Lo que Construimos | Estado |
+|--------------|--------|
 | Models.Abstractions + proveedores LLM locales | ✅ |
 | EF Core + almacenamiento SQLite | ✅ |
-| Gateway API + HTTP SSE streaming | ✅ |
-| Interfaz Blazor con streaming | ✅ |
-| Orquestación con Aspire | ✅ |
+| Gateway API + streaming HTTP SSE | ✅ |
+| Blazor UI con streaming | ✅ |
+| Orquestación Aspire | ✅ |
 
 **Resultado:** Un chatbot funcional que habla pero no puede *hacer* nada
 
 Note:
-Breve resumen de la Sesión 1. Tenemos un chatbot. Responde preguntas, hace streaming de respuestas, almacena el historial. Pero está limitado a generar texto.
+Recapitulación rápida de la Sesión 1. Tenemos un chatbot. Responde preguntas, transmite respuestas, almacena historial. Pero está limitado a generar texto.
 
 ---
 
@@ -46,7 +46,7 @@ Un chatbot genera texto. <!-- .element: class="fragment" -->
 
 Un agente **usa herramientas** para interactuar con el mundo. <!-- .element: class="fragment" -->
 
-¿La diferencia? Una sola palabra: **herramientas**. <!-- .element: class="fragment" -->
+¿La diferencia? Una palabra: **tools**. <!-- .element: class="fragment" -->
 
 Note:
 El concepto más importante de hoy. Un chatbot solo puede hablar. Un agente puede actuar. El puente entre ellos es la llamada a herramientas.
@@ -56,12 +56,12 @@ El concepto más importante de hoy. Un chatbot solo puede hablar. Un agente pued
 <!-- .slide: class="section-divider" -->
 
 # Etapa 1
-## Arquitectura de Herramientas
+## Arquitectura de Tools
 
 🔧 12 minutos
 
 Note:
-Empecemos con la capa de abstracción de herramientas — cómo las definimos, registramos y ejecutamos.
+Comencemos con la capa de abstracción de herramientas — cómo definimos, registramos y ejecutamos tools.
 
 ---
 
@@ -70,33 +70,33 @@ Empecemos con la capa de abstracción de herramientas — cómo las definimos, r
 ## Chatbot vs Agente
 
 | Chatbot | Agente |
-|---------|--------|
+|---------|-------|
 | Recibe texto | Recibe texto |
 | Genera texto | **Razona** sobre acciones |
 | Devuelve texto | **Solicita llamadas a herramientas** |
-| Listo | Ejecuta herramientas → itera |
+| Terminado | Ejecuta herramientas → ciclo |
 
 El modelo no ejecuta nada — emite una solicitud estructurada <!-- .element: class="fragment" -->
 
 Note:
-Distinción clave. El modelo dice "quiero llamar a file_system con action=list". Nuestro código decide si permitirlo, lo ejecuta y devuelve el resultado. El modelo nunca toca el sistema de archivos directamente.
+Distinción clave. El modelo dice "Quiero llamar a file_system con action=list". Nuestro código decide si permitirlo, lo ejecuta y devuelve el resultado. El modelo nunca toca el sistema de archivos directamente.
 
 ---
 
 <!-- .slide: class="architecture-slide" -->
 
-## Framework de Herramientas
+## Framework de Tools
 
 ```
 ┌─────────────────────────────────────────────┐
-│              Agent Orchestrator              │
+│          Orquestador de Agentes              │
 ├─────────────────────────────────────────────┤
-│    IToolExecutor (approval + execution)     │
+│    IToolExecutor (aprobación + ejecución)   │
 ├──────────┬──────────┬──────────┬────────────┤
 │ 📁 File  │ 💻 Shell │ 🌐 Web  │ ⏰ Sched  │
 │ System   │ Tool     │ Tool    │ Tool       │
 ├──────────┴──────────┴──────────┴────────────┤
-│         IToolRegistry (discovery)           │
+│      IToolRegistry (descubrimiento)         │
 ├─────────────────────────────────────────────┤
 │    ITool + ToolMetadata + ToolResult        │
 └─────────────────────────────────────────────┘
@@ -124,13 +124,13 @@ public interface ITool
 }
 ```
 
-- `Name` — cómo lo llama el modelo <!-- .element: class="fragment" -->
-- `Description` — cuándo usarlo (¡ingeniería de prompts!) <!-- .element: class="fragment" -->
-- `Metadata` — esquema JSON para parámetros <!-- .element: class="fragment" -->
-- `ExecuteAsync` → `ToolResult` (¡no un string!) <!-- .element: class="fragment" -->
+- `Name` — cómo el modelo la llama <!-- .element: class="fragment" -->
+- `Description` — cuándo usarla (¡ingeniería de prompts!) <!-- .element: class="fragment" -->
+- `Metadata` — JSON Schema para parámetros <!-- .element: class="fragment" -->
+- `ExecuteAsync` → `ToolResult` (¡no es un string!) <!-- .element: class="fragment" -->
 
 Note:
-Cuatro miembros. Name identifica la herramienta. Description le dice al modelo cuándo usarla — esto es ingeniería de prompts integrada en tu arquitectura. Metadata incluye el esquema JSON. ExecuteAsync devuelve un ToolResult estructurado con Success, Output, Error y Duration.
+Cuatro miembros. Name identifica la herramienta. Description le dice al modelo cuándo usarla — esto es ingeniería de prompts integrada en tu arquitectura. Metadata incluye el JSON Schema. ExecuteAsync devuelve un ToolResult estructurado con Success, Output, Error y Duration.
 
 ---
 
@@ -156,7 +156,7 @@ public sealed class AlwaysApprovePolicy : IToolApprovalPolicy
 ShellTool establece `RequiresApproval = true` <!-- .element: class="fragment" -->
 
 Note:
-La interfaz de seguridad. Dos preguntas: ¿esta herramienta requiere aprobación, y ha sido aprobada? El valor por defecto es aprobar todo automáticamente. Pero ShellTool opta por requerir aprobación — en producción mostrarías un diálogo de confirmación.
+La interfaz de puerta de seguridad. Dos preguntas: ¿esta herramienta requiere aprobación?, ¿ha sido aprobada? Por defecto es auto-aprobar todo. Pero ShellTool opta por aprobación — en producción mostrarías un diálogo de confirmación.
 
 ---
 
@@ -187,7 +187,7 @@ public async Task<ToolResult> ExecuteAsync(string toolName, string arguments, ..
 ```
 
 Note:
-Toda llamada a herramienta pasa por aquí. Búsqueda, aprobación, ejecución, registro. Este patrón de punto de control significa que agregamos métricas una vez, registro una vez, aprobación una vez — se aplica a TODAS las herramientas.
+Toda llamada a herramienta fluye por aquí. Búsqueda, aprobación, ejecución, registro. Este patrón de punto de control significa que agregamos métricas una vez, logging una vez, aprobación una vez — se aplica a TODAS las herramientas.
 
 ---
 
@@ -200,14 +200,14 @@ Toda llamada a herramienta pasa por aquí. Búsqueda, aprobación, ejecución, r
 Mostrar el manifiesto de herramientas — lo que ve el modelo
 
 Note:
-Hora del demo. Mostrar el endpoint /api/tools. La respuesta JSON lista cada herramienta con nombre, descripción y esquema de parámetros. Esto es lo que usa el LLM para decidir qué herramienta llamar.
+Hora del demo. Mostrar el endpoint /api/tools. La respuesta JSON lista cada herramienta con nombre, descripción y esquema de parámetros. Esto es lo que el LLM usa para decidir qué herramienta llamar.
 
 ---
 
 <!-- .slide: class="section-divider" -->
 
 # Etapa 2
-## Herramientas Integradas + Seguridad
+## Tools Integradas + Seguridad
 
 🛡️ 15 minutos
 
@@ -221,17 +221,17 @@ Ahora veamos las cuatro herramientas integradas y las amenazas de seguridad cont
 ## Tres Amenazas de Seguridad
 
 | Amenaza | Ataque | Impacto |
-|---------|--------|---------|
-| 🗂️ **Path Traversal** | `../../etc/passwd` | Expone todo el sistema de archivos |
-| 💻 **Inyección de Comandos** | `rm -rf /` | Destruye el servidor |
-| 🌐 **SSRF** | `http://169.254.169.254/` | Filtra credenciales de nube |
+|--------|--------|--------|
+| 🗂️ **Path Traversal** | `../../etc/passwd` | Exponer todo el sistema de archivos |
+| 💻 **Command Injection** | `rm -rf /` | Destruir el servidor |
+| 🌐 **SSRF** | `http://169.254.169.254/` | Filtrar credenciales de la nube |
 
-Cada herramienta valida las entradas **antes** de la ejecución <!-- .element: class="fragment" -->
+Cada herramienta valida entradas **antes** de la ejecución <!-- .element: class="fragment" -->
 
-Fallar rápido. Fallar de forma segura. <!-- .element: class="fragment" -->
+Falla rápido. Falla seguro. <!-- .element: class="fragment" -->
 
 Note:
-Tres amenazas reales. El path traversal escapa del workspace. La inyección de comandos ejecuta comandos destructivos. El SSRF accede a redes internas. Cada herramienta tiene defensas específicas. El patrón es siempre el mismo: validar antes de ejecutar.
+Tres amenazas reales. Path traversal escapa del espacio de trabajo. Command injection ejecuta comandos destructivos. SSRF accede a redes internas. Cada herramienta tiene defensas específicas. El patrón es siempre el mismo: validar antes de ejecutar.
 
 ---
 
@@ -265,13 +265,13 @@ private string? ResolvePath(string relativePath)
 ```
 
 Note:
-Dos defensas. Primero, una lista negra para archivos sensibles. Segundo, Path.GetFullPath resuelve todos los segmentos punto-punto, luego verificamos si el resultado todavía comienza con nuestra raíz de workspace. Si alguien intenta ../../etc/passwd, GetFullPath lo resuelve, y no comenzará con el workspace. Bloqueado.
+Dos defensas. Primero, una lista de bloqueo para archivos sensibles. Segundo, Path.GetFullPath resuelve todos los segmentos punto-punto, luego verificamos si el resultado aún comienza con la raíz de nuestro espacio de trabajo. Si alguien intenta ../../etc/passwd, GetFullPath lo resuelve y no comenzará con el workspace. Bloqueado.
 
 ---
 
 <!-- .slide: class="code-slide" -->
 
-## ShellTool — Lista Negra de Comandos
+## ShellTool — Lista de Bloqueo de Comandos
 
 ```csharp
 private static readonly HashSet<string> BlockedCommands = 
@@ -292,10 +292,10 @@ private static bool IsSafeCommand(string command)
 }
 ```
 
-+ tiempo límite de 30s · límite de 10K caracteres de salida · `RequiresApproval = true` <!-- .element: class="fragment" -->
++ timeout de 30s · límite de salida de 10K caracteres · `RequiresApproval = true` <!-- .element: class="fragment" -->
 
 Note:
-14 comandos bloqueados. Extrae la primera palabra, quita el prefijo de ruta, verifica la lista negra. Más un tiempo límite de 30 segundos con eliminación del árbol de procesos, límite de 10K caracteres de salida, y aprobación requerida. Defensa en profundidad.
+14 comandos bloqueados. Extraer primera palabra, quitar prefijo de ruta, verificar lista de bloqueo. Además un timeout de 30 segundos con muerte del árbol de procesos, límite de 10K caracteres de salida, y aprobación requerida. Defensa en profundidad.
 
 ---
 
@@ -316,10 +316,10 @@ private static bool IsLocalUri(Uri uri)
 }
 ```
 
-También: solo HTTP/HTTPS · límite de 50K caracteres · tiempo límite de 15s <!-- .element: class="fragment" -->
+También: solo HTTP/HTTPS · límite de 50K caracteres · timeout de 15s <!-- .element: class="fragment" -->
 
 Note:
-Bloquea todas las direcciones privadas y locales. Sin localhost, sin 127.0.0.1, sin rangos privados. Solo esquemas HTTP y HTTPS — sin file://, sin ftp://. En producción también resolverías DNS para detectar trucos con CNAME.
+Bloquear todas las direcciones privadas y locales. No localhost, no 127.0.0.1, no rangos privados. Solo esquemas HTTP y HTTPS — no file://, no ftp://. En producción también resolverías DNS para detectar trucos de CNAME.
 
 ---
 
@@ -328,17 +328,17 @@ Bloquea todas las direcciones privadas y locales. Sin localhost, sin 127.0.0.1, 
 ## Ataque → Bloqueado
 
 | Intento de Ataque | Resultado |
-|------------------|-----------|
-| "Leer `../../etc/passwd`" | ❌ Ruta fuera del workspace |
-| "Ejecutar `rm -rf /`" | ❌ Comando bloqueado por política |
-| "Obtener `http://127.0.0.1:8080`" | ❌ Dirección local bloqueada |
-| "Leer archivo `.env`" | ❌ Ruta bloqueada |
-| "Ejecutar `shutdown`" | ❌ Comando bloqueado por política |
+|---------------|--------|
+| "Lee `../../etc/passwd`" | ❌ Ruta fuera del espacio de trabajo |
+| "Ejecuta `rm -rf /`" | ❌ Comando bloqueado por política |
+| "Obtén `http://127.0.0.1:8080`" | ❌ Dirección local bloqueada |
+| "Lee archivo `.env`" | ❌ Ruta bloqueada |
+| "Ejecuta `shutdown`" | ❌ Comando bloqueado por política |
 
-Todos los ataques detectados. Sin ejecución. <!-- .element: class="fragment" -->
+Todos los ataques capturados. Sin ejecución. <!-- .element: class="fragment" -->
 
 Note:
-Cinco intentos de ataque, cinco rechazos. La acción peligrosa nunca se ejecuta. Así funciona el modelo de seguridad en la práctica.
+Cinco intentos de ataque, cinco rechazos. La acción peligrosa nunca se ejecuta. Este es el modelo de seguridad en acción.
 
 ---
 
@@ -351,25 +351,25 @@ Cinco intentos de ataque, cinco rechazos. La acción peligrosa nunca se ejecuta.
 > "Agrega `wget` y `curl` a la lista de comandos bloqueados. Estos podrían usarse para exfiltrar datos."
 
 Note:
-Primer momento Copilot. Extendemos la lista negra de ShellTool para incluir herramientas de red que podrían exfiltrar datos. Cambio pequeño, gran impacto en seguridad.
+Primer momento Copilot. Extendemos la lista de bloqueo de ShellTool para incluir herramientas de red que podrían exfiltrar datos. Pequeño cambio, gran impacto en seguridad.
 
 ---
 
 <!-- .slide: class="section-divider" -->
 
 # Etapa 3
-## Bucle de Agente + Integración
+## Ciclo del Agente + Integración
 
 🔄 15 minutos
 
 Note:
-El framework de herramientas está listo. Ahora veamos cómo el orquestador de agente conecta todo con el bucle de razonamiento.
+El framework de herramientas está listo. Ahora veamos cómo el orquestador de agentes une todo con el ciclo de razonamiento.
 
 ---
 
 <!-- .slide: class="architecture-slide" -->
 
-## El Bucle de Razonamiento del Agente
+## El Ciclo de Razonamiento del Agente
 
 ```
   ┌──────────────────┐
@@ -377,7 +377,7 @@ El framework de herramientas está listo. Ahora veamos cómo el orquestador de a
   └────────┬─────────┘
            ▼
   ┌──────────────────┐
-  │ Componer Prompt   │ ◄── system + history + tools
+  │ Componer Prompt  │ ◄── system + history + tools
   └────────┬─────────┘
            ▼
   ┌──────────────────┐
@@ -385,22 +385,22 @@ El framework de herramientas está listo. Ahora veamos cómo el orquestador de a
   └────────┬─────────┘
            ▼
      ┌─────────────┐
-     │ ¿Herramientas?│
+     │ ¿Tool calls? │
      └──┬───────┬───┘
-    SÍ  │       │ NO
+    YES │       │ NO
         ▼       ▼
   ┌──────────┐  ┌──────────────┐
-  │ Ejecutar │  │ Devolver resp│
-  │ herram.  │  │ final        │
-  └────┬─────┘  └──────────────┘
-       │
+  │ Ejecutar │  │ Devolver     │
+  │ tools    │  │ respuesta    │
+  └────┬─────┘  │ final        │
+       │        └──────────────┘
        └──────► volver a "Llamar Modelo"
 
-  Seguridad: máx. 10 iteraciones
+  Seguridad: máximo 10 iteraciones
 ```
 
 Note:
-El algoritmo central. Componer prompt, llamar al modelo, verificar si hay llamadas a herramientas. Si se solicitan herramientas, ejecutarlas y volver al bucle. Si no hay herramientas, tenemos la respuesta final. Máximo 10 iteraciones como válvula de seguridad.
+El algoritmo central. Componer prompt, llamar modelo, verificar llamadas a herramientas. Si se solicitan herramientas, ejecutarlas y volver al ciclo. Si no hay herramientas, tenemos la respuesta final. Máximo 10 iteraciones como válvula de seguridad.
 
 ---
 
@@ -434,13 +434,13 @@ public async Task<AgentResponse> ProcessAsync(
 ```
 
 Note:
-El orquestador es la API pública. Crea el contexto y delega al runtime. Separación limpia — el orquestador no sabe nada sobre herramientas, modelos o prompts.
+El orquestador es la API pública. Crea el contexto, delega al runtime. Separación limpia — el orquestador no conoce herramientas, modelos ni prompts.
 
 ---
 
 <!-- .slide: class="code-slide" -->
 
-## DefaultAgentRuntime — El Bucle
+## DefaultAgentRuntime — El Ciclo
 
 ```csharp
 while (iterations < MaxToolIterations)  // max = 10
@@ -475,7 +475,7 @@ while (iterations < MaxToolIterations)  // max = 10
 ```
 
 Note:
-El corazón del agente. Bucle while con máximo de iteraciones. Si el modelo devuelve llamadas a herramientas, ejecuta cada una a través del ejecutor, agrega los resultados como mensajes Tool, y vuelve al bucle. Si el modelo devuelve solo texto, esa es la respuesta final.
+El corazón del agente. Ciclo while con máximo de iteraciones. Si el modelo devuelve llamadas a herramientas, ejecutar cada una a través del ejecutor, agregar resultados como mensajes Tool, volver al ciclo. Si el modelo devuelve solo texto, esa es la respuesta final.
 
 ---
 
@@ -509,10 +509,10 @@ public async Task<IReadOnlyList<ChatMessage>> ComposeAsync(
 }
 ```
 
-Las definiciones de herramientas se pasan por separado mediante la API del modelo <!-- .element: class="fragment" -->
+Definiciones de herramientas pasadas por separado vía API del modelo <!-- .element: class="fragment" -->
 
 Note:
-Cuatro capas: prompt del sistema con skills, resumen de sesión, historial de conversación, mensaje actual. Importante: las definiciones de herramientas NO están en el prompt del sistema — son objetos estructurados que se pasan mediante la API del modelo.
+Cuatro capas: prompt de sistema con skills, resumen de sesión, historial de conversación, mensaje actual. Importante: las definiciones de herramientas NO están en el prompt de sistema — son objetos estructurados pasados vía la API del modelo.
 
 ---
 
@@ -522,12 +522,12 @@ Cuatro capas: prompt del sistema con skills, resumen de sesión, historial de co
 
 ### El Agente Usa Herramientas
 
-1. 📁 "Lista los archivos del directorio actual" → FileSystem
+1. 📁 "Lista archivos en el directorio actual" → FileSystem
 2. 🌐 "¿Qué hay en Hacker News?" → Web fetch + resumir
-3. 🚫 "Ejecutar `rm -rf /`" → ¡Bloqueado!
+3. 🚫 "Ejecuta `rm -rf /`" → ¡Bloqueado!
 
 Note:
-Tres demos mostrando el bucle del agente en acción. Listado de archivos, obtención web y un comando peligroso bloqueado. Observa las llamadas a herramientas fluir a través del ejecutor.
+Tres demos mostrando el ciclo del agente en acción. Listado de archivos, obtención web, y un comando peligroso bloqueado. Observa cómo las llamadas a herramientas fluyen a través del ejecutor.
 
 ---
 
@@ -535,68 +535,68 @@ Tres demos mostrando el bucle del agente en acción. Listado de archivos, obtenc
 
 ## 🤖 Momento Copilot #2
 
-### Agregar estadísticas de ejecución al ToolExecutor
+### Agregar estadísticas de ejecución a ToolExecutor
 
-> "Agrega un método `GetExecutionStats()` que devuelva nombre de herramienta → duración promedio. Seguimiento en un `ConcurrentDictionary`."
+> "Agrega un método `GetExecutionStats()` que devuelva nombre de herramienta → duración promedio. Rastrea en un `ConcurrentDictionary`."
 
 El **patrón de punto de control** hace esto trivial <!-- .element: class="fragment" -->
 
 Note:
-Segundo momento Copilot. Debido a que todas las herramientas pasan por el ejecutor, agregamos métricas en un solo lugar y obtenemos estadísticas para todo. Demuestra el beneficio arquitectónico.
+Segundo momento Copilot. Porque todas las herramientas pasan por el ejecutor, agregamos métricas en un solo lugar y obtenemos estadísticas para todo. Muestra el beneficio arquitectónico.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## ✅ Qué Construimos
+## ✅ Lo que Construimos
 
 - ✅ Capa de abstracción de herramientas (ITool, IToolExecutor, IToolRegistry) <!-- .element: class="fragment" -->
 - ✅ Puerta de política de aprobación (IToolApprovalPolicy) <!-- .element: class="fragment" -->
 - ✅ FileSystemTool con prevención de path traversal <!-- .element: class="fragment" -->
-- ✅ ShellTool con lista negra de comandos + tiempo límite <!-- .element: class="fragment" -->
+- ✅ ShellTool con lista de bloqueo de comandos + timeout <!-- .element: class="fragment" -->
 - ✅ WebTool con protección SSRF <!-- .element: class="fragment" -->
 - ✅ SchedulerTool con CRUD de trabajos <!-- .element: class="fragment" -->
-- ✅ Bucle de razonamiento del agente (prompt → modelo → herramienta → bucle) <!-- .element: class="fragment" -->
-- ✅ Composición de prompts con inyección de herramientas <!-- .element: class="fragment" -->
+- ✅ Ciclo de razonamiento del agente (prompt → modelo → tool → ciclo) <!-- .element: class="fragment" -->
+- ✅ Composición de prompt con inyección de herramientas <!-- .element: class="fragment" -->
 
 Note:
-Ocho marcas de verificación. Un framework completo de herramientas, cuatro herramientas con seguridad, y el bucle del agente que lo conecta todo.
+Ocho marcas de verificación. Un framework completo de herramientas, cuatro herramientas con seguridad, y el ciclo del agente que une todo.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## 🛡️ Resumen de Seguridad
+## 🛡️ Recapitulación de Seguridad
 
 | Amenaza | Herramienta | Defensa |
-|---------|-------------|---------|
-| Path Traversal | FileSystemTool | `Path.GetFullPath` + límite de workspace |
-| Inyección de Comandos | ShellTool | HashSet de comandos bloqueados + tiempo límite |
-| SSRF | WebTool | Lista negra de IPs privadas + verificación de esquema |
+|--------|------|---------|
+| Path Traversal | FileSystemTool | `Path.GetFullPath` + límite de espacio de trabajo |
+| Command Injection | ShellTool | HashSet de comandos bloqueados + timeout |
+| SSRF | WebTool | Lista de bloqueo de IPs privadas + verificación de esquema |
 
 **Patrón:** Validar entradas *antes* de la ejecución <!-- .element: class="fragment" -->
 
-**Principio:** Fallar rápido. Fallar de forma segura. <!-- .element: class="fragment" -->
+**Principio:** Falla rápido. Falla seguro. <!-- .element: class="fragment" -->
 
 Note:
-Tres amenazas, tres defensas. El patrón es siempre el mismo: validar antes de ejecutar. Esto aplica a cualquier herramienta que construyas, no solo a estas cuatro.
+Tres amenazas, tres defensas. El patrón es siempre el mismo: validar antes de ejecutar. Esto se aplica a cualquier herramienta que construyas, no solo a estas cuatro.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## 🔮 Vista Previa de la Próxima Sesión
+## 🔮 Avance de la Próxima Sesión
 
 ### Sesión 3: Skills + Memoria
 
-> "El agente ya tiene manos. Lo siguiente: darle personalidad y memoria."
+> "El agente ahora tiene manos. Siguiente: dale personalidad y memoria."
 
-- **Skills** — archivos YAML de personalidad que personalizan el comportamiento <!-- .element: class="fragment" -->
-- **Memoria** — Resumen de conversaciones para contexto a largo plazo <!-- .element: class="fragment" -->
-- **Carga de Skills** — Descubrimiento dinámico + inyección en prompt del sistema <!-- .element: class="fragment" -->
+- **Skills** — Archivos YAML de personalidad que personalizan el comportamiento <!-- .element: class="fragment" -->
+- **Memoria** — Resumen de conversación para contexto de largo plazo <!-- .element: class="fragment" -->
+- **Carga de skills** — Descubrimiento dinámico + inyección en prompt de sistema <!-- .element: class="fragment" -->
 
 Note:
-Vista previa de la Sesión 3. El agente ya puede actuar en el mundo. A continuación le damos personalidad a través de skills y memoria mediante el resumen de conversaciones.
+Avance de la Sesión 3. El agente ahora puede actuar en el mundo. A continuación le damos personalidad a través de skills y memoria mediante resumen de conversación.
 
 ---
 
@@ -606,7 +606,7 @@ Vista previa de la Sesión 3. El agente ya puede actuar en el mundo. A continuac
 
 | Recurso | Enlace |
 |----------|------|
-| 📦 Repositorio GitHub | [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet) |
+| 📦 GitHub Repo | [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet) |
 | 🦀 OpenClaw | [openclaw.ai](https://openclaw.ai) |
 | 🧠 NVIDIA NemoClaw | [nvidia.com/en-us/ai/nemoclaw](https://www.nvidia.com/en-us/ai/nemoclaw/) |
 | 🔗 NemoClaw GitHub | [github.com/NVIDIA/NemoClaw](https://github.com/NVIDIA/NemoClaw) |
@@ -621,7 +621,7 @@ Note: Todos los enlaces están en el README de la sesión.
 
 # ¡Gracias! 💜
 
-## OpenClawNet — Sesión 2 Completada
+## OpenClawNet — Sesión 2 Completa
 
 **Bruno Capuano** — 🐦 [@elbruno](https://x.com/elbruno) · 💼 [LinkedIn](https://www.linkedin.com/in/elbruno/)
 
@@ -629,9 +629,9 @@ Note: Todos los enlaces están en el README de la sesión.
 
 📦 [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet)
 
-⭐ Dale una estrella · 🍴 Haz un fork · 🔨 Rómpelo · 🔧 Arréglalo
+⭐ Dale estrella · 🍴 Haz fork · 🔨 Rómpelo · 🔧 Arréglalo
 
 ¡Nos vemos en la **Sesión 3**!
 
 Note:
-¡Gracias! Todo el código está en el repositorio. Nos vemos la próxima vez para Skills y Memoria.
+¡Gracias! Todo el código está en el repositorio. Nos vemos la próxima para Skills y Memoria.

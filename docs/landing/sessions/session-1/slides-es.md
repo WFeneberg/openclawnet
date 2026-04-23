@@ -4,7 +4,7 @@
 
 ## Sesión 1: Fundamentos + Chat Local
 
-### Construyendo una Plataforma de Agentes de IA con .NET
+### Construyendo una Plataforma de Agentes IA con .NET
 
 <div class="presenter-info">
 
@@ -12,7 +12,7 @@ Bruno Capuano · Pablo Piovano · Serie Microsoft Reactor
 
 </div>
 
-Note: ¡Bienvenidos! Este es un viaje de 5 sesiones. Todo el código ya está construido — estamos aquí para entender cada capa. Al final de hoy tendrás una pila de IA completa y funcionando en tu máquina.
+Note: ¡Bienvenidos! Este es un viaje de 5 sesiones. Todo el código ya está construido — estamos aquí para entender cada capa. Al final de hoy tendrás un stack completo de IA funcionando en tu máquina.
 
 ---
 
@@ -23,17 +23,17 @@ Note: ¡Bienvenidos! Este es un viaje de 5 sesiones. Todo el código ya está co
 <div class="roadmap-timeline">
 
 **→ Sesión 1:** Fundamentos + Chat Local  
-*Arquitectura, origen de OpenClaw, LLMs Locales, HTTP Streaming*
+*Arquitectura, origen de OpenClaw, LLMs Locales, Streaming HTTP*
 
 **Sesiones 2–5 (Próximamente):**
-- Herramientas y Flujos de Trabajo de Agentes
-- Habilidades y Memoria  
-- Automatización y Nube
-- Canales, Navegador y Eventos
+- Tools & Flujos de Agentes
+- Skills & Memoria  
+- Automatización & Cloud
+- Canales, Browser & Eventos
 
 </div>
 
-Note: 5 sesiones. Cada una se construye sobre la anterior. Hoy = el fundamento del que todo depende.
+Note: 5 sesiones. Cada una se construye sobre la anterior. Hoy = los fundamentos de los que todo depende.
 
 ---
 
@@ -44,12 +44,12 @@ Note: 5 sesiones. Cada una se construye sobre la anterior. Hoy = el fundamento d
 <div class="two-col">
 <div>
 
-OpenClaw es una plataforma de agentes de código abierto — una **arquitectura de referencia** para construir agentes de IA con:
+OpenClaw es una plataforma de agentes de código abierto — una **arquitectura de referencia** para construir agentes IA con:
 
 - Gateway persistente como plano de control <!-- .element: class="fragment" -->
 - Runtime de agentes consciente del workspace <!-- .element: class="fragment" -->
-- Herramientas, habilidades y memoria de primera clase <!-- .element: class="fragment" -->
-- Abstracción de modelo multi-proveedor <!-- .element: class="fragment" -->
+- Tools, skills y memoria de primera clase <!-- .element: class="fragment" -->
+- Abstracción de modelos multi-proveedor <!-- .element: class="fragment" -->
 - Canales: Teams, WhatsApp, Telegram... <!-- .element: class="fragment" -->
 
 </div>
@@ -58,14 +58,14 @@ OpenClaw es una plataforma de agentes de código abierto — una **arquitectura 
 **Los 9 Pilares:**
 
 1. Gateway como Plano de Control
-2. Runtime del Agente + Workspace
-3. Sesiones y Memoria
-4. Herramientas de Primera Clase
-5. Sistema de Habilidades
-6. Abstracción de Modelo
+2. Runtime de Agentes + Workspace
+3. Sesiones & Memoria
+4. Tools de Primera Clase
+5. Sistema de Skills
+6. Abstracción de Modelos
 7. Automatización (cron + webhooks)
 8. Superficies de UI (Control + WebChat)
-9. Canales y Nodos
+9. Canales & Nodos
 
 </div>
 </div>
@@ -80,27 +80,27 @@ Note: OpenClaw define la arquitectura. Nosotros la implementamos. openclaw.ai es
 
 | Concepto OpenClaw | OpenClawNet | .NET |
 |------------------|-------------|------|
-| Gateway como Plano de Control | `OpenClawNet.Gateway` | Minimal APIs + HTTP SSE + Scheduler |
-| Runtime del Agente + Workspace | `IAgentOrchestrator` + `WorkspaceLoader` | AGENTS.md / SOUL.md / USER.md |
-| Sesiones y Memoria | `IMemoryService` + `ISummaryService` | EF Core + SQLite + compactación |
-| Herramientas de Primera Clase | `ITool` + FileSystem, Shell, Web, Browser | Navegador con Playwright |
-| Sistema de Habilidades | `SkillLoader` | Markdown/YAML con precedencia |
-| Abstracción de Modelo | `IAgentProvider` + `RuntimeAgentProvider` | Ollama, Azure OpenAI, Foundry, Foundry Local, GitHub Copilot |
+| Gateway como Plano de Control | `OpenClawNet.Gateway` | Minimal APIs + HTTP NDJSON + Scheduler |
+| Runtime de Agentes + Workspace | `IAgentOrchestrator` + `WorkspaceLoader` | AGENTS.md / SOUL.md / USER.md |
+| Sesiones & Memoria | `IMemoryService` + `ISummaryService` | EF Core + SQLite + compactación |
+| Tools de Primera Clase | `ITool` + FileSystem, Shell, Web, Browser | Browser respaldado por Playwright |
+| Sistema de Skills | `SkillLoader` | Markdown/YAML con precedencia |
+| Abstracción de Modelos | `IAgentProvider` + `RuntimeAgentProvider` | Ollama, Azure OpenAI, Foundry, Foundry Local, GitHub Copilot |
 | Automatización | `JobSchedulerService` + WebhookEndpoints | cron + triggers de GitHub |
 | Superficies de UI | Blazor Web App (Control UI + WebChat) | Ambas desde un proyecto |
-| Canales y Nodos | `IChannel` + adaptador Teams | Bot Framework; nodos móviles planeados |
+| Canales & Nodos | `IChannel` + adaptador Teams | Bot Framework; nodos móviles planeados |
 
-Note: Esta es la tabla de traducción. Cada pilar de OpenClaw se mapea a un tipo o proyecto .NET.
+Note: Esta es la tabla de traducción. Cada pilar de OpenClaw mapea a un tipo o proyecto .NET.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## ¿Qué Construiremos Hoy? — 3 Etapas
+## Lo Que Construiremos Hoy — 3 Etapas
 
-- **Etapa 1:** 🧱 Arquitectura y Abstracciones Clave (IAgentProvider, AgentProfile, records, DI) <!-- .element: class="fragment" -->
+- **Etapa 1:** 🧱 Arquitectura & Abstracciones Core (IAgentProvider, AgentProfile, records, DI) <!-- .element: class="fragment" -->
 - **Etapa 2:** 🤖 LLMs Locales + Workspace + Almacenamiento (Ollama, FoundryLocal, archivos bootstrap, EF Core) <!-- .element: class="fragment" -->
-- **Etapa 3:** ⚡ Gateway + HTTP SSE + Blazor (streaming en tiempo real, Aspire, demo del stack completo) <!-- .element: class="fragment" -->
+- **Etapa 3:** ⚡ Gateway + HTTP NDJSON + Blazor (streaming en tiempo real, Aspire, demo full stack) <!-- .element: class="fragment" -->
 
 Note: 3 etapas, ~15 min cada una. Cada etapa es un checkpoint ejecutable.
 
@@ -108,7 +108,7 @@ Note: 3 etapas, ~15 min cada una. Cada etapa es un checkpoint ejecutable.
 
 <!-- .slide: class="content-slide" -->
 
-## Verificación de Requisitos
+## Verificación de Prerequisitos
 
 ```bash
 dotnet --version   # 10.0.x
@@ -122,9 +122,9 @@ ollama list          # llama3.2
 foundry model list   # phi
 ```
 
-Extensión de GitHub Copilot instalada y activa ✓
+GitHub Copilot extension instalada y activa ✓
 
-Note: Verificación rápida. Se requieren .NET 10 y un LLM local. Copilot para los momentos en vivo.
+Note: Verificación rápida. .NET 10 y un LLM local son requeridos. Copilot para los momentos en vivo.
 
 ---
 
@@ -132,7 +132,7 @@ Note: Verificación rápida. Se requieren .NET 10 y un LLM local. Copilot para l
 
 # Etapa 1
 
-## Arquitectura y Abstracciones Clave
+## Arquitectura & Abstracciones Core
 
 ⏱️ 15 minutos
 
@@ -149,10 +149,10 @@ Note: Primero el panorama general — cómo está diseñada la plataforma.
 │                      Blazor Web UI                        │
 │                   (OpenClawNet.Web)                        │
 ├──────────────────────────────────────────────────────────┤
-│              HTTP SSE + REST API                          │
+│            HTTP NDJSON + REST API                          │
 │              (OpenClawNet.Gateway)                         │
 ├──────────────────────────────────────────────────────────┤
-│              RuntimeAgentProvider (enrutador)              │
+│              RuntimeAgentProvider (router)                 │
 ├────────┬──────────┬─────────┬────────────┬──────────────┤
 │ Ollama │Azure AOAI│ Foundry │FoundryLocal│GitHub Copilot│
 ├────────┴──────────┴─────────┴────────────┴──────────────┤
@@ -162,41 +162,41 @@ Note: Primero el panorama general — cómo está diseñada la plataforma.
 
 **Arquitectura completa en la guía de la sesión — hoy nos enfocamos en las capas fundamentales**
 
-Note: El Gateway es el centro neurálgico — persistente, con estado, todo pasa por él. RuntimeAgentProvider enruta al proveedor activo.
+Note: El Gateway es el centro nervioso — persistente, con estado, todo pasa a través de él. RuntimeAgentProvider enruta al proveedor activo. 6 proveedores totales incluyendo RuntimeAgentProvider.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## 22 Proyectos, Una Responsabilidad Cada Uno
+## 27 Proyectos, Una Responsabilidad Cada Uno
 
 | Proyecto | Capa | Propósito |
 |---------|-------|---------|
-| AppHost | Orquestación | Host de Aspire |
-| ServiceDefaults | Orquestación | Telemetría + salud |
-| Gateway | Gateway | APIs, HTTP SSE streaming, planificador, canales |
+| AppHost | Orquestación | Host Aspire |
+| ServiceDefaults | Orquestación | Telemetría + health |
+| Gateway | Gateway | APIs, streaming HTTP NDJSON, scheduler, canales |
 | Web | UI | Blazor Control UI + WebChat |
-| Agent | Agente | Orquestador, compositor de prompts, cargador de workspace |
-| Models.Abstractions | Proveedor | `IAgentProvider`, `AgentProfile`, `ChatMessage`, `ToolDefinition` |
-| Models.Ollama | Proveedor | Proveedor REST de Ollama |
-| Models.FoundryLocal | Proveedor | Proveedor Foundry en dispositivo |
-| Models.AzureOpenAI | Proveedor | SDK de Azure OpenAI |
-| Models.Foundry | Proveedor | Proveedor cloud de Foundry |
-| Models.GitHubCopilot | Proveedor | Proveedor SDK de GitHub Copilot |
-| Tools.Abstractions | Herramientas | `ITool`, `IToolRegistry`, `IToolExecutor` |
-| Tools.Core | Herramientas | Registro + ejecutor |
-| Tools.FileSystem | Herramientas | Lectura/escritura segura de archivos |
-| Tools.Shell | Herramientas | Ejecución de comandos |
-| Tools.Web | Herramientas | Fetch HTTP |
-| Tools.Scheduler | Herramientas | Herramienta de planificación de tareas |
-| Tools.Browser | Herramientas | Navegador headless con Playwright |
-| Skills | Habilidades | Parser + cargador Markdown |
-| Memory | Memoria | Resumen, embeddings, búsqueda |
-| Storage | Almacenamiento | EF Core + SQLite |
-| Adapters.Teams | Canales | Adaptador Bot Framework |
-| UnitTests + IntegrationTests | Pruebas | Suite de pruebas xUnit |
+| Agent | Agent | Orquestador, compositor de prompts, cargador de workspace |
+| Models.Abstractions | Provider | `IAgentProvider`, `AgentProfile`, `ChatMessage`, `ToolDefinition` |
+| Models.Ollama | Provider | Proveedor REST Ollama |
+| Models.FoundryLocal | Provider | Proveedor Foundry en dispositivo |
+| Models.AzureOpenAI | Provider | SDK Azure OpenAI |
+| Models.Foundry | Provider | Proveedor Foundry cloud |
+| Models.GitHubCopilot | Provider | Proveedor SDK GitHub Copilot |
+| Tools.Abstractions | Tools | `ITool`, `IToolRegistry`, `IToolExecutor` |
+| Tools.Core | Tools | Registry + executor |
+| Tools.FileSystem | Tools | Lectura/escritura segura de archivos |
+| Tools.Shell | Tools | Ejecución de comandos |
+| Tools.Web | Tools | Fetch HTTP |
+| Tools.Scheduler | Tools | Tool de programación de jobs |
+| Tools.Browser | Tools | Browser headless Playwright |
+| Skills | Skills | Parser + cargador de Markdown |
+| Memory | Memory | Resumen, embeddings, búsqueda |
+| Storage | Storage | EF Core + SQLite |
+| Adapters.Teams | Channels | Adaptador Bot Framework |
+| UnitTests + IntegrationTests | Tests | Suite de tests xUnit |
 
-Note: Cada proyecto = una responsabilidad. Esto hace el código navegable y testeable.
+Note: Cada proyecto = una preocupación. Esto hace el código navegable y testeable. 27 proyectos totales incluyendo scheduler, shell, browser, canales y servicios de memoria.
 
 ---
 
@@ -205,35 +205,35 @@ Note: Cada proyecto = una responsabilidad. Esto hace el código navegable y test
 ## Los 9 Pilares en Código
 
 - **1. Gateway** → `OpenClawNet.Gateway` (proceso persistente) <!-- .element: class="fragment" -->
-- **2. Runtime del Agente + Workspace** → `IAgentOrchestrator` + `WorkspaceLoader` <!-- .element: class="fragment" -->
-- **3. Sesiones y Memoria** → `IMemoryService` + `ISummaryService` <!-- .element: class="fragment" -->
-- **4. Herramientas** → `ITool` + FileSystem, Shell, Web, Browser, Scheduler <!-- .element: class="fragment" -->
-- **5. Habilidades** → `SkillLoader` (workspace > local > bundle) <!-- .element: class="fragment" -->
-- **6. Abstracción de Modelo** → `IAgentProvider` + `RuntimeAgentProvider` (5 proveedores) <!-- .element: class="fragment" -->
+- **2. Runtime de Agentes + Workspace** → `IAgentOrchestrator` + `WorkspaceLoader` <!-- .element: class="fragment" -->
+- **3. Sesiones & Memoria** → `IMemoryService` + `ISummaryService` <!-- .element: class="fragment" -->
+- **4. Tools** → `ITool` + FileSystem, Shell, Web, Browser, Scheduler <!-- .element: class="fragment" -->
+- **5. Skills** → `SkillLoader` (workspace > local > bundle) <!-- .element: class="fragment" -->
+- **6. Abstracción de Modelos** → `IAgentProvider` + `RuntimeAgentProvider` (6 proveedores) <!-- .element: class="fragment" -->
 - **7. Automatización** → `JobSchedulerService` + WebhookEndpoints <!-- .element: class="fragment" -->
 - **8. Superficies de UI** → Blazor (Control UI + WebChat, misma app) <!-- .element: class="fragment" -->
-- **9. Canales y Nodos** → `IChannel` + Teams + concepto de nodo <!-- .element: class="fragment" -->
+- **9. Canales & Nodos** → `IChannel` + Teams + concepto de nodo <!-- .element: class="fragment" -->
 
-Note: Una diapositiva, 9 pilares. Cada uno es un tema de sesión en la serie.
+Note: Una slide, 9 pilares. Cada uno es un tema de sesión en la serie.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## Herramientas y Habilidades
+## Tools & Skills
 
-**Herramientas** — capacidades de llamada a funciones
+**Tools** — capacidades de function-calling
 - `file_system`, `web_search`, `shell_exec`
-- Implementadas como `ITool` + `ToolAIFunction` (Agent Framework)
+- Implementados como `ITool` + `ToolAIFunction` (Agent Framework)
 
-**Habilidades Agent Framework** — revelación progresiva <!-- .element: class="fragment" -->
+**Agent Framework Skills** — divulgación progresiva <!-- .element: class="fragment" -->
 - Especificación `SKILL.md` (agentskills.io) <!-- .element: class="fragment" -->
-- Patrón Advertir → Cargar → Ejecutar <!-- .element: class="fragment" -->
+- Patrón Anunciar → Cargar → Ejecutar <!-- .element: class="fragment" -->
 - `AgentSkillsProvider` de `Microsoft.Agents.AI` <!-- .element: class="fragment" -->
 
-**Resultado**: El agente sabe QUÉ puede hacer (habilidades), CÓMO hacerlo (herramientas) <!-- .element: class="fragment" -->
+**Resultado**: El agente sabe QUÉ puede hacer (skills), CÓMO hacerlo (tools) <!-- .element: class="fragment" -->
 
-Note: Las herramientas son las acciones. Las habilidades son el contexto. AgentSkillsProvider le dice al modelo qué habilidades están disponibles antes de cada llamada — revelación progresiva.
+Note: Los tools son las acciones. Los skills son el contexto. AgentSkillsProvider informa al modelo qué skills están disponibles antes de cada llamada — divulgación progresiva.
 
 ---
 
@@ -246,13 +246,7 @@ public interface IAgentProvider
 {
     string ProviderName { get; }
 
-    Task<ChatResponse> CompleteAsync(
-        ChatRequest request,
-        CancellationToken ct = default);
-
-    IAsyncEnumerable<ChatResponseChunk> StreamAsync(
-        ChatRequest request,
-        CancellationToken ct = default);
+    IChatClient CreateChatClient(AgentProfile profile);
 
     Task<bool> IsAvailableAsync(
         CancellationToken ct = default);
@@ -261,7 +255,7 @@ public interface IAgentProvider
 
 <small>📁 `src/OpenClawNet.Models.Abstractions/IAgentProvider.cs`</small>
 
-Note: Tres métodos. Cada proveedor implementa exactamente este contrato. RuntimeAgentProvider enruta al proveedor activo — cambia Ollama por Azure o GitHub Copilot en tiempo de ejecución.
+Note: Dos métodos. Cada proveedor implementa exactamente este contrato. CreateChatClient devuelve un IChatClient configurado para el perfil del agente — este es el punto de integración con MAF. RuntimeAgentProvider enruta al proveedor activo — cambia Ollama por Azure o GitHub Copilot en tiempo de ejecución.
 
 ---
 
@@ -274,10 +268,10 @@ Note: Tres métodos. Cada proveedor implementa exactamente este contrato. Runtim
 │                      Blazor Web UI                        │
 │                   (OpenClawNet.Web)                        │
 ├──────────────────────────────────────────────────────────┤
-│              HTTP SSE + REST API                          │
+│            HTTP NDJSON + REST API                          │
 │              (OpenClawNet.Gateway)                         │
 ├──────────────────────────────────────────────────────────┤
-│              RuntimeAgentProvider (enrutador)              │
+│              RuntimeAgentProvider (router)                 │
 ├────────┬──────────┬─────────┬────────────┬──────────────┤
 │ Ollama │Azure AOAI│ Foundry │FoundryLocal│GitHub Copilot│
 └────────┴──────────┴─────────┴────────────┴──────────────┘
@@ -291,17 +285,17 @@ Note: Esta vista compacta muestra dónde estamos. RuntimeAgentProvider enruta al
 
 <!-- .slide: class="demo-transition" -->
 
-## 🎬 Demo en Vivo 1: Cambio de Proveedor — Sin Código
+## 🎬 Demo en Vivo 1: Cambio de Provider — Sin Código
 
-**Qué haremos:** Cambiar de Ollama local → Azure OpenAI → mismo chat, diferente backend
+**Lo que haremos:** Cambiar de Ollama local → Azure OpenAI → mismo chat, diferente backend
 
-**Cómo:** Usar la página de Configuración — cambiar proveedor, guardar, iniciar nuevo chat
+**Cómo:** Usar la página de Model Providers — configurar proveedor, guardar, iniciar nuevo chat
 
-**Punto de enseñanza:** La abstracción `IAgentProvider` habilita flexibilidad en tiempo de ejecución con 5 proveedores
+**Punto de enseñanza:** La abstracción `IAgentProvider` habilita flexibilidad en tiempo de ejecución entre 6 proveedores. Las definiciones de Model Provider ahora controlan el endpoint de chat real vía sincronización `ProviderResolver` → `RuntimeModelSettings`.
 
 **Sin cambios de código. Sin reinicios. Solo configuración.**
 
-Note: Este es el poder de la abstracción limpia. Misma interfaz, diferente implementación, cambio en tiempo de ejecución.
+Note: Este es el poder de la abstracción limpia. Misma interfaz, diferente implementación, intercambio en tiempo de ejecución. El ProviderResolver conecta definiciones de BD al runtime — lo que configuras en la UI es exactamente lo que usa el chat.
 
 ---
 
@@ -309,25 +303,25 @@ Note: Este es el poder de la abstracción limpia. Misma interfaz, diferente impl
 
 ## Microsoft Agent Framework
 
-**`AIAgent`** — la abstracción central
+**`AIAgent`** — la abstracción core
 - `ChatClientAgent`: envuelve cualquier `IChatClient` (Ollama, Azure, Foundry)
-- `AgentSkillsProvider`: agrega contexto de habilidades (revelación progresiva)
+- `AgentSkillsProvider`: agrega contexto de skills (divulgación progresiva)
 - `RunAsync()` / `RunStreamingAsync()`: ejecución unificada
 
 **En OpenClawNet**: <!-- .element: class="fragment" -->
 
 ```csharp
 var agent = new ChatClientAgent(
-    agentProviderAdapter, // Puente IAgentProvider → IChatClient
+    agentProviderAdapter, // IAgentProvider → bridge IChatClient
     new ChatClientAgentOptions {
         AIContextProviders = [skillsProvider]
     });
 await foreach (var update in agent.RunStreamingAsync(messages))
-    // transmitir a la UI vía HTTP NDJSON
+    // stream a UI vía HTTP NDJSON
 ```
 <!-- .element: class="fragment" -->
 
-Note: Agent Framework provee el bucle de ejecución. Conectamos nuestro adaptador IAgentProvider y AgentSkillsProvider. El agente maneja la inyección de habilidades, las llamadas a herramientas y el streaming — nosotros controlamos el modelo y las habilidades.
+Note: Agent Framework proporciona el bucle de ejecución. Conectamos nuestro adaptador IAgentProvider y AgentSkillsProvider. El agente maneja inyección de skills, llamadas a tools y streaming — nosotros poseemos el modelo y los skills.
 
 ---
 
@@ -349,39 +343,39 @@ Note: ¿Por qué modelos locales? El concepto de workspace. Cómo almacenamos to
 
 | | Ollama | Foundry Local |
 |---|--------|---------------|
-| **Instalación** | CLI + descarga de modelos | Paquete NuGet (sin configuración) |
+| **Instalación** | CLI + pull de modelos | Paquete NuGet (configuración cero) |
 | **API** | REST (compatible con OpenAI) | SDK en proceso |
 | **Modelos** | Llama, Phi, Mistral... | Phi, Qwen, DeepSeek... |
-| **Aceleración HW** | Config GPU manual | GPU / NPU / CPU automático |
+| **Aceleración HW** | Config GPU manual | Auto GPU / NPU / CPU |
 | **Privacidad** | Solo local | Solo local |
 
 Ambos implementan `IAgentProvider` → **intercambia con una línea** <!-- .element: class="fragment" -->
 
-Note: Ollama es el favorito de la comunidad. Foundry Local se distribuye como NuGet — detecta hardware automáticamente. Cero configuración del usuario.
+Note: Ollama es el favorito de la comunidad. Foundry Local se envía como NuGet — auto-detecta hardware. Configuración cero para el usuario.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## Archivos de Arranque del Workspace
+## Archivos Bootstrap de Workspace
 
 El comportamiento del agente vive en **archivos markdown**, no en código:
 
 | Archivo | Propósito |
 |------|---------|
 | `AGENTS.md` | Persona del agente, instrucciones, reglas de comportamiento |
-| `SOUL.md` | Valores del agente, principios, salvaguardas éticas |
-| `USER.md` | Perfil del usuario, preferencias, personalización |
+| `SOUL.md` | Valores del agente, principios, barandas éticas |
+| `USER.md` | Perfil de usuario, preferencias, personalización |
 
-Cargado por `WorkspaceLoader` al inicio de la sesión → inyectado en el system prompt <!-- .element: class="fragment" -->
+Cargados por `WorkspaceLoader` al inicio de sesión → inyectados en el system prompt <!-- .element: class="fragment" -->
 
 ```json
-// WorkspaceLoader reads from the session workspace directory
-// Precedence: workspace/ > local/ > bundle defaults
+// WorkspaceLoader lee del directorio de workspace de sesión
+// Precedencia: workspace/ > local/ > defaults del bundle
 {
-  "agentsMarkdown": "You are a helpful .NET assistant...",
-  "soulMarkdown": "Always be honest. Never harm users...",
-  "userMarkdown": "User prefers concise answers. Timezone: UTC-3..."
+  "agentsMarkdown": "Eres un asistente .NET útil...",
+  "soulMarkdown": "Siempre sé honesto. Nunca dañes a usuarios...",
+  "userMarkdown": "El usuario prefiere respuestas concisas. Zona horaria: UTC-3..."
 }
 ```
 
@@ -395,27 +389,27 @@ Note: No se necesitan cambios de código para cambiar el comportamiento del agen
 
 ```
 ┌─────────────────┐
-│  Proveedor LLM  │  Ollama / Azure AOAI / Foundry / Local / Copilot
-│  (generates)    │
+│  LLM Provider   │  Ollama / Azure AOAI / Foundry / Local / Copilot
+│  (genera)       │
 └────────┬────────┘
          ▼ IAsyncEnumerable<ChatResponseChunk>
 ┌─────────────────┐
-│ IAgentProvider  │  StreamAsync → yield return per token
-│  (abstracts)    │
+│ IAgentProvider  │  CreateChatClient → IChatClient por perfil
+│  (abstrae)      │
 └────────┬────────┘
          ▼ IAsyncEnumerable<AgentStreamEvent>
 ┌─────────────────┐
-│  IAgentOrch.    │  Tool loop + prompt composition
-│  (orchestrates) │
+│  IAgentOrch.    │  Bucle de tools + composición de prompt
+│  (orquesta)     │
 └────────┬────────┘
-         ▼ NDJSON HTTP stream
+         ▼ stream HTTP NDJSON
 ┌─────────────────┐
-│  Blazor UI      │  Token-by-token rendering
-│  (renders)      │
+│  Blazor UI      │  Renderizado token por token
+│  (renderiza)    │
 └─────────────────┘
 ```
 
-Note: Cada capa usa IAsyncEnumerable. Sin búfer en ningún lugar. Los tokens fluyen de arriba a abajo en tiempo real.
+Note: Cada capa usa IAsyncEnumerable. Sin buffering en ningún lugar. Los tokens fluyen de arriba a abajo en tiempo real.
 
 ---
 
@@ -425,15 +419,15 @@ Note: Cada capa usa IAsyncEnumerable. Sin búfer en ningún lugar. Los tokens fl
 
 | Entidad | Propósito |
 |--------|---------|
-| `ChatSession` | Raíz — título, proveedor, modelo, marcas de tiempo |
-| `ChatMessageEntity` | Rol, contenido, llamadas a herramientas, índice de orden |
+| `ChatSession` | Raíz — título, proveedor, modelo, timestamps |
+| `ChatMessageEntity` | Rol, contenido, llamadas a tools, índice de orden |
 | `SessionSummary` | Contexto de conversación compactado |
-| `ToolCallRecord` | Registro de auditoría de ejecución de herramientas |
-| `ScheduledJob` | Definición de tarea cron (nombre, expresión cron) |
-| `JobRun` | Historial y resultados de ejecución de tareas |
+| `ToolCallRecord` | Pista de auditoría de ejecución de tools |
+| `ScheduledJob` | Definición de job cron (nombre, expresión cron) |
+| `JobRun` | Historial de ejecución y resultados de jobs |
 | `ProviderSetting` | Configuración por proveedor |
 
-Note: 7 entidades. Cada una justifica su lugar. SessionSummary es cómo manejamos conversaciones largas sin agotar las ventanas de contexto.
+Note: 7 entidades. Cada una se gana su lugar. SessionSummary es cómo manejamos conversaciones largas sin explotar las ventanas de contexto.
 
 ---
 
@@ -441,15 +435,15 @@ Note: 7 entidades. Cada una justifica su lugar. SessionSummary es cómo manejamo
 
 ## 🎬 Demo en Vivo 3: Cambio de Personalidad del Agente
 
-**Qué haremos:** Cambiar el comportamiento del agente editando archivos de workspace — sin código
+**Lo que haremos:** Cambiar el comportamiento del agente editando archivos de workspace — sin código
 
-**Cómo:** Editar `AGENTS.md` → guardar → iniciar nuevo chat → ver el cambio de personalidad
+**Cómo:** Editar `AGENTS.md` → guardar → iniciar nuevo chat → observar el cambio de personalidad
 
 **Punto de enseñanza:** Los archivos de workspace (`AGENTS.md`, `SOUL.md`, `USER.md`) controlan el comportamiento del agente sin tocar C# ni reiniciar servicios
 
-**Personalización de comportamiento impulsada por Markdown**
+**Personalización de comportamiento dirigida por Markdown**
 
-Note: La arquitectura workspace-first significa que el comportamiento cambia sin tocar el código. Esto es personalización de agente sin código.
+Note: La arquitectura workspace-first significa cambios de comportamiento sin tocar código. Esta es personalización de agentes sin código.
 
 ---
 
@@ -457,11 +451,11 @@ Note: La arquitectura workspace-first significa que el comportamiento cambia sin
 
 # Etapa 3
 
-## Gateway + HTTP SSE + Blazor
+## Gateway + HTTP NDJSON + Blazor
 
 ⏱️ 15 minutos
 
-Note: Todas las piezas se conectan para el chat en tiempo real.
+Note: Todas las piezas se conectan para chat en tiempo real.
 
 ---
 
@@ -469,23 +463,23 @@ Note: Todas las piezas se conectan para el chat en tiempo real.
 
 ## Gateway: El Plano de Control
 
-- 🔌 Gestiona conexiones persistentes de canales (Teams, futuros adaptadores) <!-- .element: class="fragment" -->
+- 🔌 Gestiona conexiones de canal persistentes (Teams, adaptadores futuros) <!-- .element: class="fragment" -->
 - 🌐 Expone APIs REST para todas las operaciones de gestión <!-- .element: class="fragment" -->
-- ⚡ Expone endpoint HTTP SSE para streaming de tokens en tiempo real <!-- .element: class="fragment" -->
+- ⚡ Expone endpoint HTTP NDJSON para streaming de tokens en tiempo real <!-- .element: class="fragment" -->
 - 🖥️ Sirve Control UI + WebChat (ambas desde una app Blazor) <!-- .element: class="fragment" -->
-- 🔗 Maneja endpoints webhook para triggers de eventos externos <!-- .element: class="fragment" -->
-- ⏰ Ejecuta el planificador cron persistente para tareas automatizadas <!-- .element: class="fragment" -->
-- 🔥 Dispara eventos del sistema (tarea iniciada, mensaje recibido, sesión creada) <!-- .element: class="fragment" -->
+- 🔗 Maneja endpoints de webhook para triggers de eventos externos <!-- .element: class="fragment" -->
+- ⏰ Ejecuta scheduler cron persistente para jobs automatizados <!-- .element: class="fragment" -->
+- 🔥 Dispara eventos de sistema (job iniciado, mensaje recibido, sesión creada) <!-- .element: class="fragment" -->
 
-> "Todo pasa por el Gateway. Es el centro neurálgico del sistema." <!-- .element: class="fragment" -->
+> "Todo pasa a través del Gateway. Es el centro nervioso del sistema." <!-- .element: class="fragment" -->
 
-Note: NO es un proxy sin estado. Es un proceso persistente y con estado que gestiona conexiones de canales, estado de tareas y enrutamiento de eventos.
+Note: NO es un proxy sin estado. Un proceso persistente con estado que posee conexiones de canal, estado de jobs y enrutamiento de eventos.
 
 ---
 
 <!-- .slide: class="code-slide" -->
 
-## `ChatStreamEndpoints` — Tokens al Navegador
+## `ChatStreamEndpoints` — Tokens al Browser
 
 ```csharp
 app.MapPost("/api/chat/stream", async (
@@ -520,7 +514,7 @@ app.MapPost("/api/chat/stream", async (
 });
 ```
 
-Note: Endpoint de Minimal API. Devuelve NDJSON — cada línea es un evento JSON discreto. Los errores se muestran como códigos de estado HTTP. Más simple y depurable que WebSocket.
+Note: Endpoint de Minimal API. Devuelve NDJSON — cada línea es un evento JSON discreto. Los errores surgen como códigos de estado HTTP. Más simple y debuggeable que WebSocket.
 
 ---
 
@@ -529,7 +523,7 @@ Note: Endpoint de Minimal API. Devuelve NDJSON — cada línea es un evento JSON
 ## Aspire: 18 Líneas Reemplazan Docker Compose
 
 ```csharp
-// AppHost.cs — the entire topology
+// AppHost.cs — toda la topología
 var gateway = builder.AddProject<Projects.OpenClawNet_Gateway>("gateway")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
@@ -539,7 +533,7 @@ var gateway = builder.AddProject<Projects.OpenClawNet_Gateway>("gateway")
 builder.AddProject<Projects.OpenClawNet_Web>("web")
     .WithExternalHttpEndpoints()
     .WithReference(gateway)    // ← Service discovery
-    .WaitFor(gateway)          // ← Startup ordering
+    .WaitFor(gateway)          // ← Orden de arranque
     .WithEnvironment("OpenClawNet__GatewayUrl", gatewayUrl);
 
 builder.Build().Run();
@@ -547,7 +541,7 @@ builder.Build().Run();
 
 <small>Reemplaza Docker Compose + scripts de inicio · [aspire.dev](https://aspire.dev)</small>
 
-Note: WithReference = inyección automática de URL del servicio. WaitFor = Gateway debe estar sano antes de que Web inicie. Un comando: aspire run.
+Note: WithReference = inyección automática de URL de servicio. WaitFor = Gateway debe estar saludable antes de que Web inicie. Un comando: aspire run.
 
 ---
 
@@ -555,64 +549,64 @@ Note: WithReference = inyección automática de URL del servicio. WaitFor = Gate
 
 ## 🎬 Demo en Vivo 2: Copilot CLI + Aspire
 
-**Qué haremos:** Depuración asistida por IA con datos de observabilidad reales
+**Lo que haremos:** Debugging asistido por IA con datos de observabilidad reales
 
-**Cómo:** Navegar a función rota → Panel de Aspire muestra error → Copilot CLI lee traces y sugiere corrección
+**Cómo:** Navegar a feature roto → Dashboard de Aspire muestra error → Copilot CLI lee trazas y sugiere fix
 
-**Punto de enseñanza:** Aspire proporciona la señal de error; Copilot CLI la lee y propone la solución
+**Punto de enseñanza:** Aspire provee la señal de error; Copilot CLI la lee y propone la solución
 
-**Observabilidad + IA = depuración más rápida**
+**Observabilidad + IA = debugging más rápido**
 
-Note: Depuración asistida por IA. El panel de Aspire proporciona telemetría; Copilot CLI la analiza y genera correcciones.
+Note: Debugging asistido por IA. El dashboard de Aspire provee telemetría; Copilot CLI la analiza y genera fixes.
 
 ---
 
 <!-- .slide: class="demo-transition" -->
 
-## Ejecutar el Stack Completo
+## Ejecutar el Full Stack
 
 ```bash
 aspire run
 ```
 
-1. Abrir Panel de Aspire → `https://localhost:15100`
-2. Abrir UI de Blazor → `http://localhost:5001`
+1. Abrir Dashboard de Aspire → `https://localhost:15100`
+2. Abrir UI Blazor → `http://localhost:5001`
 3. Crear una sesión → Enviar un mensaje
-4. ¡Ver los tokens en streaming en tiempo real! 🚀
-5. DevTools → Network → ver respuesta streaming NDJSON
+4. ¡Observa tokens en streaming en tiempo real! 🚀
+5. DevTools → Network → ver respuesta NDJSON streaming
 
-Note: Todo lo que explicamos — interfaz, streaming, workspace, almacenamiento, HTTP streaming — todo en vivo.
+Note: Todo lo que explicamos — interfaz, streaming, workspace, almacenamiento, streaming HTTP — todo en vivo.
 
 ---
 
 <!-- .slide: class="content-slide" -->
 
-## Qué Construimos ✓ + Vista Previa Sesión 2
+## Lo Que Construimos ✓ + Vista Previa Sesión 2
 
 <div class="two-col">
 <div>
 
 - ✅ 9 pilares de OpenClaw mapeados a .NET <!-- .element: class="fragment" -->
-- ✅ `IAgentProvider` — 5 proveedores intercambiables (basado en MAF) <!-- .element: class="fragment" -->
-- ✅ Archivos bootstrap del workspace — personalización de comportamiento sin código <!-- .element: class="fragment" -->
-- ✅ Streaming LLM local — `IAsyncEnumerable` → tokens en tiempo real <!-- .element: class="fragment" -->
+- ✅ `IAgentProvider` — 6 proveedores conectables (basados en MAF) <!-- .element: class="fragment" -->
+- ✅ Archivos bootstrap de workspace — personalización de comportamiento sin código <!-- .element: class="fragment" -->
+- ✅ Streaming de LLM local — `IAsyncEnumerable` → tokens en tiempo real <!-- .element: class="fragment" -->
 - ✅ Almacenamiento EF Core — 7 entidades <!-- .element: class="fragment" -->
-- ✅ HTTP SSE streaming — tokens NDJSON al navegador <!-- .element: class="fragment" -->
-- ✅ Orquestación con Aspire — un comando, stack completo <!-- .element: class="fragment" -->
+- ✅ Streaming HTTP NDJSON — tokens NDJSON al browser <!-- .element: class="fragment" -->
+- ✅ Orquestación Aspire — un comando, full stack <!-- .element: class="fragment" -->
 
 </div>
 <div>
 
-**Próximo: dale superpoderes al chatbot**
+**Siguiente: darle superpoderes al chatbot**
 
-- 🔧 Framework de herramientas: `ITool`, `IToolRegistry`, `IToolExecutor` <!-- .element: class="fragment" -->
-- 📂 Herramientas integradas: FileSystem, Shell, Web, Scheduler <!-- .element: class="fragment" -->
+- 🔧 Framework de tools: `ITool`, `IToolRegistry`, `IToolExecutor` <!-- .element: class="fragment" -->
+- 📂 Tools integrados: FileSystem, Shell, Web, Scheduler <!-- .element: class="fragment" -->
 - 🔄 El bucle del agente: pensar → actuar → observar → repetir <!-- .element: class="fragment" -->
 
 </div>
 </div>
 
-Note: Base sólida. En la Sesión 2, el agente aprende a HACER cosas en el mundo real.
+Note: Fundamento sólido. En la Sesión 2, el agente aprende a HACER cosas en el mundo real.
 
 ---
 
@@ -620,14 +614,14 @@ Note: Base sólida. En la Sesión 2, el agente aprende a HACER cosas en el mundo
 
 ## Recursos
 
-| Recurso | Enlace |
+| Recurso | Link |
 |----------|------|
-| 📦 Repositorio GitHub | [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet) |
+| 📦 GitHub Repo | [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet) |
 | 🦞 OpenClaw | [openclaw.ai](https://openclaw.ai) |
 | 🚀 Aspire | [aspire.dev](https://aspire.dev) |
 | 🤖 Foundry Local | [learn.microsoft.com/azure/foundry-local](https://learn.microsoft.com/azure/foundry-local) |
 | 🦙 Ollama | [ollama.com](https://ollama.com) |
-| 📡 HTTP SSE | [developer.mozilla.org/en-US/docs/Web/API/Server-sent_events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) |
+| 📡 HTTP NDJSON | [developer.mozilla.org/en-US/docs/Web/API/Server-sent_events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) |
 | 🤖 GitHub Copilot | [github.com/features/copilot](https://github.com/features/copilot) |
 
 ---
@@ -650,8 +644,8 @@ Note: Base sólida. En la Sesión 2, el agente aprende a HACER cosas en el mundo
 
 📦 [github.com/elbruno/openclawnet](https://github.com/elbruno/openclawnet)
 
-**Próxima sesión:** Herramientas y Flujos de Trabajo de Agentes
+**Próxima sesión:** Tools & Flujos de Agentes
 
 </div>
 
-Note: Todos los enlaces en el README de la sesión. Dale una estrella al repositorio y descarga el código para la Sesión 2.
+Note: Todos los links en el README de la sesión. Dale star al repo y descarga el código para la Sesión 2.
