@@ -176,8 +176,8 @@ body{
       <div class="hero-subtitle">Test Dashboard &mdash; Unit Tests + E2E (Playwright + Aspire)</div>
     </div>
     <div class="hero-badge">
-      <span class="big"><!-- TOTAL_PASSED -->829<!-- /TOTAL_PASSED --> / <!-- TOTAL_TESTS -->830<!-- /TOTAL_TESTS --></span>
-      829 Passing &bull; 1 Failing &bull; 3 Skipped
+      <span class="big"><!-- TOTAL_PASSED -->878<!-- /TOTAL_PASSED --> / <!-- TOTAL_TESTS -->885<!-- /TOTAL_TESTS --></span>
+      878 Passing &bull; 2 Failing &bull; 5 Skipped
     </div>
   </div>
   <div class="nav-links">
@@ -188,9 +188,9 @@ body{
 </header>
 <section class="container">
   <div class="summary-bar">
-    <div class="stat-card stat-total"><div class="stat-value"><!-- TOTAL_TESTS -->830<!-- /TOTAL_TESTS --></div><div class="stat-label">Total Tests</div><div class="stat-breakdown">60 E2E &bull; 657 Unit &bull; 102 Integration &bull; 11 Live</div></div>
-    <div class="stat-card stat-passed"><div class="stat-value"><!-- TOTAL_PASSED -->829<!-- /TOTAL_PASSED --></div><div class="stat-label">Passed</div><div class="stat-breakdown">60 E2E &bull; 657 Unit &bull; 102 Integration &bull; 11 Live</div></div>
-    <div class="stat-card stat-failed"><div class="stat-value"><!-- TOTAL_FAILED -->1<!-- /TOTAL_FAILED --></div><div class="stat-label">Failed</div><div class="stat-breakdown">0 E2E &bull; 1 Unit &bull; 0 Integration &bull; 0 Live</div></div>
+    <div class="stat-card stat-total"><div class="stat-value"><!-- TOTAL_TESTS -->885<!-- /TOTAL_TESTS --></div><div class="stat-label">Total Tests</div><div class="stat-breakdown">60 E2E &bull; 661 Unit &bull; 153 Integration &bull; 11 Live</div></div>
+    <div class="stat-card stat-passed"><div class="stat-value"><!-- TOTAL_PASSED -->878<!-- /TOTAL_PASSED --></div><div class="stat-label">Passed</div><div class="stat-breakdown">60 E2E &bull; 658 Unit &bull; 151 Integration &bull; 9 Live</div></div>
+    <div class="stat-card stat-failed"><div class="stat-value"><!-- TOTAL_FAILED -->2<!-- /TOTAL_FAILED --></div><div class="stat-label">Failed</div><div class="stat-breakdown">0 E2E &bull; 0 Unit &bull; 0 Integration &bull; 2 Live</div></div>
     <div class="stat-card stat-duration"><div class="stat-value"><!-- TOTAL_DURATION -->5m 40s<!-- /TOTAL_DURATION --></div><div class="stat-label">Duration</div><div class="stat-breakdown">E2E: 3m 49s &bull; Unit: 13s &bull; Integration: 24s &bull; Live: 40s</div></div>
   </div>
   <div style="text-align:center; margin-bottom: 16px; font-size: 0.8rem; color: var(--muted);">
@@ -370,7 +370,7 @@ body{
 <div id="unit-tests" style="margin: 40px 0 24px; padding: 20px 0; border-top: 2px solid rgba(124,92,252,0.2);">
   <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--teal-light); display: flex; align-items: center; gap: 10px;">
     <span>&#x1F9EA;</span> Unit Tests
-    <span style="font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-left: auto;">657 tests &bull; 13s total &bull; 657 passing &bull; 1 failing (pre-existing) &bull; 3 skipped</span>
+    <span style="font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-left: auto;">658 tests &bull; 13s total &bull; 658 passing &bull; 0 failing &bull; 3 skipped</span>
   </h2>
   <p style="font-size: 0.85rem; color: var(--muted); margin-top: 6px;">Fast isolated tests &mdash; no Aspire, no Ollama, no network. Run with <code style="font-family:'JetBrains Mono',monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; color: var(--teal-light);">dotnet test tests/OpenClawNet.UnitTests</code></p>
 </div>
@@ -409,7 +409,7 @@ body{
   <div class="demo-card">
     <div class="demo-header">
       <span class="demo-number">INTEGRATION</span>
-      <span class="demo-title">REST Endpoint Coverage — Debug-First APIs</span>
+      <span class="demo-title">REST Endpoint Coverage — Debug-First APIs (First Pass)</span>
       <span class="demo-count">39 tests (29 RestCoverage + 10 NewEndpoints)</span>
       <span class="demo-desc">Comprehensive REST API coverage: tool calls, artifacts, state history, logs, search, health</span>
     </div>
@@ -478,6 +478,26 @@ body{
       <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Jobs Delete &mdash; ReturnsNoContent OnSuccess</div></div></div>
       <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Tools List &mdash; ReturnsRegistered Tools</div></div></div>
       <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">Health Checks &mdash; Gateway HealthEndpoint ReturnsHealthy</div></div></div>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <span class="demo-number">INTEGRATION</span>
+      <span class="demo-title">REST Endpoint Coverage — Second Pass APIs (Session 6)</span>
+      <span class="demo-count">51 tests across 8 new test files</span>
+      <span class="demo-desc">Extended API coverage: channels, job schedules, adapters, runtime settings, MCP server tools, diagnostics, job streams, edge cases</span>
+    </div>
+    <div class="test-list">
+      <div style="font-weight:600;color:var(--coral);margin:12px 0 8px;font-size:0.85rem;">New Test Files (Session 6)</div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ChannelsExtraEndpointsTests</div><div class="test-desc">8 tests covering channels, subscriptions, message history</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">JobScheduleEndpointsTests</div><div class="test-desc">5 tests covering schedules, CRON patterns, next execution</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">ChannelAdapterEndpointsTests</div><div class="test-desc">6 tests covering adapters, configuration, status</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">RuntimeSettingsEndpointsTests</div><div class="test-desc">4 tests covering settings GET/PUT, validation</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">McpServerToolsEndpointsTests</div><div class="test-desc">10 tests covering MCP servers, tools, discovery</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">DiagnosticsEndpointsTests</div><div class="test-desc">6 tests covering diagnostics, system info, metrics</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">JobStreamEndpointsTests</div><div class="test-desc">7 tests covering job event streams, SSE, filtering</div></div></div>
+      <div class="test-item"><span class="test-icon pass">&#x2713;</span><div><div class="test-name">SecondPassEndpointsEdgeCasesTests</div><div class="test-desc">5 tests covering edge cases, validation, error handling</div></div></div>
     </div>
   </div>
 <!-- END_UNIT_INTEGRATION -->
@@ -979,13 +999,13 @@ body{
       <h3>CI / CD</h3>
       <p>Tests run in <a href="https://github.com/elbruno/openclawnet-plan/actions" target="_blank">GitHub Actions (private repo)</a>. Results are published here automatically via <code>publish-test-dashboard.ps1</code>.</p>
       <h3>Last Updated</h3>
-      <p><!-- LAST_UPDATED -->2026-04-23<!-- /LAST_UPDATED --></p>
+      <p><!-- LAST_UPDATED -->2025-01-19<!-- /LAST_UPDATED --></p>
     </div>
   </details>
 </section>
 <footer class="footer">
   &#x1F980; OpenClaw .NET &mdash; Built with .NET 10, Aspire, Blazor, SignalR, Ollama &amp; &#x2764;&#xFE0F; by <a href="https://github.com/elbruno" style="color:var(--teal);text-decoration:none">Bruno Capuano</a><br>
-  <span style="font-size:0.75rem;opacity:0.6;margin-top:4px;display:inline-block">Dashboard updated: April 24, 2026 &mdash; REST coverage expansion (102 integration tests)</span>
+  <span style="font-size:0.75rem;opacity:0.6;margin-top:4px;display:inline-block">Dashboard updated: January 19, 2025 &mdash; Session 6: +51 integration tests covering 14 second-pass REST endpoints; ElapsedMs negative-value bug fixed (151 integration tests)</span>
 </footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
