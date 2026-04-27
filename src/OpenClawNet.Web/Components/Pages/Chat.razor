@@ -19,19 +19,47 @@
         <button class="btn btn-primary btn-sm mb-2 w-100" @onclick="NewSession" disabled="@_isStreaming">
             + New Chat
         </button>
+        
+        @* Filter input *@
+        <div class="input-group input-group-sm mb-2">
+            <input type="text" class="form-control" placeholder="Filter chats…" 
+                   @bind="_chatFilter" @onkeydown="HandleFilterKeyDown" />
+            @if (!string.IsNullOrEmpty(_chatFilter))
+            {
+                <button class="btn btn-outline-secondary" type="button" @onclick="ClearFilter" title="Clear filter">✕</button>
+            }
+        </div>
+        
         @if (_loadingSessions)
         {
             <div class="text-muted small text-center py-2">Loading…</div>
         }
         else
         {
-            @foreach (var s in _sessions)
+            var displayedSessions = string.IsNullOrEmpty(_chatFilter) 
+                ? _sessions 
+                : _sessions.Where(s => ChatMatchesFilter(s)).ToList();
+            
+            @if (displayedSessions.Count == 0 && !string.IsNullOrEmpty(_chatFilter))
             {
-                <div class="session-item rounded px-2 py-1 mb-1 @(s.Id == _currentSession?.Id ? "bg-primary text-white" : "bg-light")"
-                     style="cursor:pointer" @onclick="() => SwitchSession(s)">
-                    <div class="small fw-semibold text-truncate" title="@s.Title">@s.Title</div>
-                    <div class="small opacity-75">@s.UpdatedAt.ToLocalTime().ToString("MMM d, HH:mm")</div>
-                </div>
+                <div class="text-muted small text-center py-2">No chats found</div>
+            }
+            else
+            {
+                @foreach (var s in displayedSessions)
+                {
+                    <div class="session-item rounded px-2 py-1 mb-1 @(s.Id == _currentSession?.Id ? "bg-primary text-white" : "bg-light")"
+                         style="cursor:pointer" @onclick="() => SwitchSession(s)">
+                        <div class="small fw-semibold text-truncate" title="@s.Title">@s.Title</div>
+                        @if (!string.IsNullOrEmpty(s.Provider))
+                        {
+                            <div class="small opacity-75 text-truncate" title="Agent: @s.Provider">
+                                (Agent: @s.Provider@(string.IsNullOrEmpty(s.Model) ? "" : $" · {s.Model}"))
+                            </div>
+                        }
+                        <div class="small opacity-75">@s.UpdatedAt.ToLocalTime().ToString("MMM d, HH:mm")</div>
+                    </div>
+                }
             }
         }
     </div>
@@ -54,6 +82,17 @@
                 {
                     <span class="fw-semibold">@_currentSession.Title</span>
                     <button class="btn btn-sm btn-outline-secondary py-0" @onclick="StartRename" title="Rename session">✏️</button>
+                    <button class="btn btn-sm btn-outline-secondary py-0" @onclick="AutoRenameChat" 
+                            disabled="@_isAutoRenaming" title="Auto-rename chat based on content">
+                        @if (_isAutoRenaming)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        }
+                        else
+                        {
+                            <span>✨</span>
+                        }
+                    </button>
                     <button class="btn btn-sm btn-outline-secondary py-0" @onclick="ShareSession" title="Copy shareable link">🔗</button>
                 }
             </div>
@@ -388,6 +427,10 @@
     // Rename
     private bool _isRenaming;
     private string _renameTitle = string.Empty;
+    private bool _isAutoRenaming;
+
+    // Filter
+    private string _chatFilter = string.Empty;
 
     // Agent profiles
     private List<AgentProfileDto> _agentProfiles = [];
@@ -565,6 +608,76 @@
         {
             Logger.LogError(ex, "Failed to copy session link to clipboard");
         }
+    }
+
+    private async Task AutoRenameChat()
+    {
+        if (_currentSession is null) return;
+        if (_isAutoRenaming) return;
+
+        _isAutoRenaming = true;
+        StateHasChanged();
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient("gateway");
+            var response = await client.PostAsync($"api/chat/{_currentSession.Id}/auto-rename", null);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<AutoRenameResponse>();
+                if (result is not null && !string.IsNullOrEmpty(result.NewName))
+                {
+                    var updated = _currentSession with { Title = result.NewName };
+                    var idx = _sessions.FindIndex(s => s.Id == _currentSession.Id);
+                    if (idx >= 0) _sessions[idx] = updated;
+                    _currentSession = updated;
+                    _consolePanel?.AddLog("SUCCESS", $"✓ Chat renamed to: {result.NewName}");
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _connectionError = $"Failed to auto-rename chat: {errorContent}";
+                _consolePanel?.AddError($"Auto-rename failed: {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _connectionError = $"Failed to auto-rename chat: {ex.Message}";
+            _consolePanel?.AddError($"Auto-rename error: {ex.Message}");
+        }
+        finally
+        {
+            _isAutoRenaming = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private bool ChatMatchesFilter(SessionDto session)
+    {
+        if (string.IsNullOrEmpty(_chatFilter))
+            return true;
+
+        var filterLower = _chatFilter.ToLowerInvariant();
+        var titleMatches = session.Title.Contains(_chatFilter, StringComparison.OrdinalIgnoreCase);
+        var agentMatches = !string.IsNullOrEmpty(session.Provider) && 
+                          session.Provider.Contains(_chatFilter, StringComparison.OrdinalIgnoreCase);
+        var modelMatches = !string.IsNullOrEmpty(session.Model) && 
+                          session.Model.Contains(_chatFilter, StringComparison.OrdinalIgnoreCase);
+
+        return titleMatches || agentMatches || modelMatches;
+    }
+
+    private void ClearFilter()
+    {
+        _chatFilter = string.Empty;
+    }
+
+    private void HandleFilterKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+            ClearFilter();
     }
 
     // ── Chat (HTTP NDJSON streaming) ──────────────────────────────────────
@@ -804,10 +917,17 @@
         public long? DurationMs { get; set; }
     }
 
-    private sealed record SessionDto(Guid Id, string Title, DateTime CreatedAt, DateTime UpdatedAt);
+    private sealed record SessionDto(
+        Guid Id, 
+        string Title, 
+        DateTime CreatedAt, 
+        DateTime UpdatedAt,
+        string? Provider = null,
+        string? Model = null);
     private sealed record AgentProfileDto(string Name, string? DisplayName, string? Provider, bool IsDefault);
     private sealed record ProviderInfoDto(string Name, string ProviderType, string? DisplayName, string? Model, string? DeploymentName);
     private sealed record MessageDto(Guid Id, string Role, string Content, DateTime CreatedAt);
+    private sealed record AutoRenameResponse(bool Success, string NewName);
     private sealed record ChatStreamEvent
     {
         public string Type { get; init; } = string.Empty;

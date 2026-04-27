@@ -100,6 +100,44 @@ public static class ChatEndpoints
         })
         .WithName("SendChatMessage")
         .WithDescription("Send a message and get a response");
+        
+        group.MapPost("/{id}/auto-rename", async (
+            Guid id,
+            IConversationStore conversationStore,
+            ChatNamingService namingService,
+            ILogger<Program> logger) =>
+        {
+            try
+            {
+                var session = await conversationStore.GetSessionAsync(id);
+                if (session is null)
+                {
+                    return Results.NotFound(new { error = $"Chat session {id} not found" });
+                }
+
+                var messages = await conversationStore.GetMessagesAsync(id);
+                if (messages.Count == 0)
+                {
+                    return Results.BadRequest(new { error = "Cannot auto-rename empty chat" });
+                }
+
+                var newName = await namingService.GenerateChatNameAsync(id, messages);
+                var updatedSession = await conversationStore.UpdateSessionTitleAsync(id, newName);
+
+                return Results.Ok(new AutoRenameResponse
+                {
+                    Success = true,
+                    NewName = updatedSession.Title
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error auto-renaming chat {ChatId}", id);
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        })
+        .WithName("AutoRenameChat")
+        .WithDescription("Auto-generate and set a chat name based on conversation content");
     }
 }
 
@@ -117,4 +155,10 @@ public sealed record ChatMessageResponse
     public required string Content { get; init; }
     public int ToolCallCount { get; init; }
     public int TotalTokens { get; init; }
+}
+
+public sealed record AutoRenameResponse
+{
+    public required bool Success { get; init; }
+    public required string NewName { get; init; }
 }

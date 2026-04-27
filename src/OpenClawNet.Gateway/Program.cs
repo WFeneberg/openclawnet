@@ -213,6 +213,9 @@ builder.Services.AddSingleton<IChannelRegistry, ChannelRegistry>();
 // Smart schedule parser (uses IModelClient to parse natural-language schedules)
 builder.Services.AddSingleton<SmartScheduleParser>();
 
+// Chat naming service (uses IModelClient to generate chat names from messages)
+builder.Services.AddScoped<ChatNamingService>();
+
 // Job executor service
 builder.Services.AddScoped<JobExecutor>();
 builder.Services.AddSingleton<OpenClawNet.Gateway.Services.JobTemplates.JobTemplatesProvider>();
