@@ -243,9 +243,15 @@
 
 ## 🎬 Live Demo Commands — Headed E2E (for voice-over recording)
 
-These PowerShell blocks launch real Playwright tests with **Chromium visible** and a **1.5-second slow-mo** between every step, so you can narrate the flow live (or capture clean screen-recordings for the deck).
+These PowerShell blocks launch real Playwright tests with **Chromium visible** and a **configurable slow-mo** between every step, so you can narrate the flow live (or capture clean screen-recordings for the deck).
 
-> **How it works:** `AppHostFixture` checks `$env:PLAYWRIGHT_HEADED`. When set to `true`, it launches Chromium with `Headless = false` and `SlowMo = 1500ms`. No code changes needed — flip the env var, run any Playwright test.
+> **How it works:** `AppHostFixture` checks `$env:PLAYWRIGHT_HEADED`. When set to `true`, it launches Chromium with `Headless = false` and a slow-mo delay between actions. The delay defaults to **1500ms** but can be overridden with `$env:PLAYWRIGHT_SLOWMO` (milliseconds, e.g. `"800"` for snappier, `"2500"` for more breathing room). No code changes needed — flip the env vars, run any Playwright test.
+
+> **Tuning for your pitch:**
+> - `$env:PLAYWRIGHT_SLOWMO = "800"` — fast, energetic ~5min run
+> - `$env:PLAYWRIGHT_SLOWMO = "1500"` — default, comfortable narration pace
+> - `$env:PLAYWRIGHT_SLOWMO = "2500"` — slow, room for deep voice-over commentary
+> - `$env:PLAYWRIGHT_SLOWMO = "0"` — disables slow-mo even in headed mode (chrome visible, full speed)
 
 > **Pre-flight:** Make sure Aspire is **NOT** already running (the test harness owns the AppHost lifecycle). If it is, run `aspire stop` first. The first run takes ~60s to build + start the app; subsequent runs are faster.
 
@@ -256,6 +262,7 @@ These PowerShell blocks launch real Playwright tests with **Chromium visible** a
 ```powershell
 $env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
 $env:PLAYWRIGHT_HEADED = "true"
+$env:PLAYWRIGHT_SLOWMO = "1500"   # tune to your pitch: 800=fast, 1500=default, 2500=slow
 
 dotnet test tests\OpenClawNet.PlaywrightTests `
   --filter "FullyQualifiedName~SkillsPirateJourneyE2ETests" `
@@ -276,6 +283,7 @@ dotnet test tests\OpenClawNet.PlaywrightTests `
 ```powershell
 $env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
 $env:PLAYWRIGHT_HEADED = "true"
+$env:PLAYWRIGHT_SLOWMO = "1500"
 
 dotnet test tests\OpenClawNet.PlaywrightTests `
   --filter "FullyQualifiedName~ToolApprovalFlowTests.Profile_RequireApproval_True_UserApproves_ContinuesExecution" `
@@ -298,6 +306,7 @@ dotnet test tests\OpenClawNet.PlaywrightTests `
 ```powershell
 $env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
 $env:PLAYWRIGHT_HEADED = "true"
+$env:PLAYWRIGHT_SLOWMO = "1500"
 
 dotnet test tests\OpenClawNet.PlaywrightTests `
   --filter "FullyQualifiedName~SkillsEmojiTeacherJourneyE2ETests" `
@@ -331,6 +340,7 @@ For a longer recording session — runs all three skill journeys back-to-back:
 ```powershell
 $env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
 $env:PLAYWRIGHT_HEADED = "true"
+$env:PLAYWRIGHT_SLOWMO = "1200"   # slightly faster — three demos back-to-back
 
 dotnet test tests\OpenClawNet.PlaywrightTests `
   --filter "FullyQualifiedName~SkillsPirateJourneyE2ETests|FullyQualifiedName~SkillsEmojiTeacherJourneyE2ETests|FullyQualifiedName~SkillsBulletPointJourneyE2ETests" `
@@ -341,5 +351,6 @@ dotnet test tests\OpenClawNet.PlaywrightTests `
 
 ```powershell
 Remove-Item Env:\PLAYWRIGHT_HEADED   # back to headless for normal CI runs
+Remove-Item Env:\PLAYWRIGHT_SLOWMO -ErrorAction SilentlyContinue
 ```
 - **Transparency** — users see memory stats, not a black box
