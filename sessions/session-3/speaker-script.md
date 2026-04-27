@@ -253,21 +253,7 @@ These PowerShell blocks launch real Playwright tests with **Chromium visible** a
 > - `$env:PLAYWRIGHT_SLOWMO = "2500"` — slow, room for deep voice-over commentary
 > - `$env:PLAYWRIGHT_SLOWMO = "0"` — disables slow-mo even in headed mode (chrome visible, full speed)
 
-> **Pre-flight (one-time per session):**
->
-> **1. Build the test project once** (so every demo can use `--no-build --no-restore` and skip the ~20-40s rebuild between runs):
-> ```powershell
-> $env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
-> dotnet build tests\OpenClawNet.PlaywrightTests --configuration Debug
-> ```
->
-> **2. Start Aspire** in a dedicated terminal and leave it running for the whole talk:
-> ```powershell
-> aspire start src\OpenClawNet.AppHost
-> # Wait for green health checks + dashboard (http://localhost:15178)
-> ```
->
-> All demo commands below assume both are up. **If you change source code mid-session**, drop the `--no-build` flag once to rebuild, then re-add it.
+> **Pre-flight (handled before the talk):** Aspire is running (`aspire start src\OpenClawNet.AppHost`, dashboard green at http://localhost:15178) and the Playwright test project has been built once (`dotnet build tests\OpenClawNet.PlaywrightTests`). Demo commands below assume both — they use `--no-build --no-restore` so each run starts in 2-3s.
 
 ### Demo 1 — Add a Skill, Use It (Pirate persona)
 
