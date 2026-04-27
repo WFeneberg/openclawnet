@@ -1854,6 +1854,103 @@ The "wow" demo. Author a skill in real time. Save the file. Watch the gateway lo
 
 <!-- _class: lead -->
 
+# 🧑‍💻  Part 7 — Code Demos
+
+<!--
+SPEAKER NOTES — code demos divider.
+We've shown the live system end-to-end. Now three tiny C# console apps — one per pillar — that strip each idea down to ~150 lines you can read in a coffee break. Source lives in docs/sessions/session-3/code/ in the repo. Each one runs with a single `dotnet run`.
+-->
+
+---
+
+## Code Demo 1 — `SkillOnOff` (Skills pillar)
+
+**Same prompt, twice.** Once raw to Ollama, once with a skill prepended.
+
+```text
+─── RAW ───────────────────────────────────────
+"Sure! Here are 12 enterprise-grade strategies
+ to leverage your synergistic..."  (350 words)
+
+─── WITH skill: concise-tone ──────────────────
+"Use bullets. Cut adjectives. Ship."  (8 words)
+```
+
+📁 `docs/sessions/session-3/code/01-SkillOnOff/`
+
+<!--
+SPEAKER NOTES — code demo 1.
+This is the cheapest possible illustration of why skills exist. Two HTTP calls to /api/generate, the only difference is one extra string concatenated to the system prompt. Audience SHOULD have an "oh that's it?" moment. That's the point. Skills aren't magic — they're disciplined prompt composition with a registry.
+-->
+
+---
+
+## Code Demo 2 — `AgentProfileSwitcher` (Storage pillar)
+
+**SQLite-backed REPL. Two seeded profiles. Switch with `:use`.**
+
+```text
+> hello, who are you?
+[CodeReviewer] I'm here to review your code. Paste a snippet.
+
+> :use pirate
+✓ active profile: pirate
+
+> hello, who are you?
+[Pirate] Arrr, I be Cap'n GPT, scourge of the seven seas! 🏴‍☠️
+```
+
+📁 `docs/sessions/session-3/code/02-AgentProfileSwitcher/`
+
+<!--
+SPEAKER NOTES — code demo 2.
+The whole "profile" thing is just a row in SQLite: name, instructions, model. The REPL pulls the active row, prepends the instructions, calls Ollama. Switching is one UPDATE statement. This is the core of agent profiles in the real product, minus the UI and the safety rails.
+-->
+
+---
+
+## Code Demo 3 — `MemoryStub` (Memory pillar)
+
+**Chat loop that remembers. SQLite + LIKE matching. No embeddings.**
+
+```text
+> my dog's name is Pixel
+ok, noted.
+
+... 30 turns later ...
+
+> what's my pet's name?
+[recall: 1 match for "pet/dog/Pixel" from turn 3]
+Your dog's name is Pixel.
+```
+
+📁 `docs/sessions/session-3/code/03-MemoryStub/`
+
+<!--
+SPEAKER NOTES — code demo 3.
+This is the "before vector search" version of memory. Last N turns + a SQL LIKE query against older history. Crude, fast, free. Good enough for 80% of personal-use cases. The session-4 version replaces LIKE with embeddings + cosine similarity. Showing this first makes the upgrade story concrete: you don't need a vector DB to start adding memory to an agent.
+-->
+
+---
+
+## Bonus demos in the repo
+
+Two more standalone apps under `code/` for self-study:
+
+- **`04-SkillPicker/`** — scans `*.skill.md`, picks the best skill for a query (no LLM)
+- **`05-ProviderCatalogCli/`** — `list / add / test / delete` CRUD over `ModelProviderDefinition`
+
+Same pattern: single project, one `dotnet run`, ~150 lines.
+
+<!--
+SPEAKER NOTES — bonus demos.
+Don't walk through these on stage. Mention they exist, point at the folder, move on. They're for the audience to read on the train home.
+-->
+
+---
+
+<!-- _class: lead -->
+
 # 🎯  Closing
 
 <!--
