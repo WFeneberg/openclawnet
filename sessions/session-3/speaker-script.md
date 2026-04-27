@@ -238,4 +238,108 @@
 - **Prompt composition** — base instructions + active skills + session summary + history
 - **Context window management** — summarize old messages, keep recent ones verbatim
 - **Local embeddings** — semantic search with no API calls, data stays on machine
+
+---
+
+## 🎬 Live Demo Commands — Headed E2E (for voice-over recording)
+
+These PowerShell blocks launch real Playwright tests with **Chromium visible** and a **1.5-second slow-mo** between every step, so you can narrate the flow live (or capture clean screen-recordings for the deck).
+
+> **How it works:** `AppHostFixture` checks `$env:PLAYWRIGHT_HEADED`. When set to `true`, it launches Chromium with `Headless = false` and `SlowMo = 1500ms`. No code changes needed — flip the env var, run any Playwright test.
+
+> **Pre-flight:** Make sure Aspire is **NOT** already running (the test harness owns the AppHost lifecycle). If it is, run `aspire stop` first. The first run takes ~60s to build + start the app; subsequent runs are faster.
+
+### Demo 1 — Add a Skill, Use It (Pirate persona)
+
+**What it shows:** Toggle the `pirate` skill ON in Skills page → open chat → send message → agent replies in pirate voice. Proves "Markdown file → behavior change, no restart."
+
+```powershell
+$env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
+$env:PLAYWRIGHT_HEADED = "true"
+
+dotnet test tests\OpenClawNet.PlaywrightTests `
+  --filter "FullyQualifiedName~SkillsPirateJourneyE2ETests" `
+  --logger "console;verbosity=normal"
+```
+
+**Voice-over beats** (synced to slow-mo pacing):
+1. *"Watch the skill toggle flip — that's a single API call, no rebuild."*
+2. *"Now we open a fresh chat — the prompt composer just inlined the pirate skill into the system prompt."*
+3. *"The reply comes back in character. Same model, same code — different Markdown file."*
+
+---
+
+### Demo 2 — Tool Approval Flow (security gate live)
+
+**What it shows:** Agent calls a tool that requires approval → UI pauses, shows the approval card → user clicks **Approve** → execution resumes. The "human in the loop" guardrail in action.
+
+```powershell
+$env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
+$env:PLAYWRIGHT_HEADED = "true"
+
+dotnet test tests\OpenClawNet.PlaywrightTests `
+  --filter "FullyQualifiedName~ToolApprovalFlowTests.Profile_RequireApproval_True_UserApproves_ContinuesExecution" `
+  --logger "console;verbosity=normal"
+```
+
+**Voice-over beats:**
+1. *"The agent decides it needs to read a file — but the profile requires approval."*
+2. *"Streaming pauses. The UI surfaces the exact tool call and arguments — no surprises."*
+3. *"User clicks Approve. The button disables to prevent double-submit, then streaming resumes from where it stopped."*
+
+> **Tip:** For a denial demo instead, swap the filter to `~ToolApprovalFlowTests.Profile_RequireApproval_True_UserDenies_StopsCleanly`.
+
+---
+
+### Demo 3 — Second Skill (Emoji Teacher)
+
+**What it shows:** Different skill, same mechanism — proves the skill system is a real abstraction, not a one-off pirate hack.
+
+```powershell
+$env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
+$env:PLAYWRIGHT_HEADED = "true"
+
+dotnet test tests\OpenClawNet.PlaywrightTests `
+  --filter "FullyQualifiedName~SkillsEmojiTeacherJourneyE2ETests" `
+  --logger "console;verbosity=normal"
+```
+
+**Voice-over beats:**
+1. *"Same Skills page, different toggle. Watch the persona shift end-to-end."*
+2. *"Replies come back with emoji-prefixed teaching format — defined entirely in `emoji-teacher/SKILL.md`."*
+
+---
+
+### Demo 4 — Awesome-Copilot Skill Import (manual walkthrough)
+
+> **No headed E2E exists yet** for the awesome-copilot import flow (covered by integration tests only). Use this manual path live, or pre-record:
+
+1. **Open** Skills page → click **"Import from awesome-copilot"** button.
+2. **Pick** a skill from the GitHub catalog (e.g., `security-auditor.md`).
+3. **Preview** — show the manifest: repo, commit SHA, SHA-256 hash. *"Pinned to a commit — no surprise updates."*
+4. **Confirm** — file lands in `{StorageRoot}\skills\installed\security-auditor\SKILL.md`.
+5. **Toggle ON** for an agent → ask the agent to review some code → see the security-auditor persona in action.
+
+**Voice-over hook:** *"Two clicks to install a community skill, with cryptographic provenance. Your team can curate skills the same way you curate NuGet packages."*
+
+---
+
+### Run-All Variant (full skills journey suite, headed)
+
+For a longer recording session — runs all three skill journeys back-to-back:
+
+```powershell
+$env:NUGET_PACKAGES = "$env:USERPROFILE\.nuget\packages2"
+$env:PLAYWRIGHT_HEADED = "true"
+
+dotnet test tests\OpenClawNet.PlaywrightTests `
+  --filter "FullyQualifiedName~SkillsPirateJourneyE2ETests|FullyQualifiedName~SkillsEmojiTeacherJourneyE2ETests|FullyQualifiedName~SkillsBulletPointJourneyE2ETests" `
+  --logger "console;verbosity=normal"
+```
+
+### Cleanup (after demos)
+
+```powershell
+Remove-Item Env:\PLAYWRIGHT_HEADED   # back to headless for normal CI runs
+```
 - **Transparency** — users see memory stats, not a black box
