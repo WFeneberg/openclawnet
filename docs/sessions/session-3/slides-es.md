@@ -24,8 +24,8 @@ footer: "OpenClawNet · Sesión 3 · Habilidades, Almacenamiento y Memoria"
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Nunes Lopes** — Cloud Advocate, Microsoft
-[linkedin.com/in/pablonuneslopes](https://www.linkedin.com/in/pablonuneslopes/)
+**Pablo Piovano** — Microsoft MVP
+[linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>
 
@@ -1928,8 +1928,8 @@ Hacia dónde vamos después. Proveedores en la nube significa que el mismo agent
 **Bruno Capuano** — Principal Cloud Advocate, Microsoft
 [github.com/elbruno](https://github.com/elbruno) · [@elbruno](https://twitter.com/elbruno)
 
-**Pablo Nunes Lopes** — Cloud Advocate, Microsoft
-[linkedin.com/in/pablonuneslopes](https://www.linkedin.com/in/pablonuneslopes/)
+**Pablo Piovano** — Microsoft MVP
+[linkedin.com/in/ppiova](https://www.linkedin.com/in/ppiova/)
 
 </div>
 
